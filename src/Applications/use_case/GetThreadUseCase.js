@@ -7,7 +7,7 @@ class GetThreadUseCase {
 
   async execute(useCaseParam) {
     const { threadId } = useCaseParam;
-    const threadDetail = await this._threadRepository.verifyThreadAvalaibility(threadId);
+    const threadDetail = await this._threadRepository.getThreadById(threadId);
     threadDetail.comments = await this._commentRepository.getCommentsByThreadId(threadId);
     const replyRepository = await this._replyRepository.getRepliesByThreadId(threadId);
 

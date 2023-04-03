@@ -31,15 +31,12 @@ describe('AddReplyUseCase', () => {
     const mockReplyRepository = new ReplyRepository();
 
     /** mocking needed functions */
-    mockCommentRepository.checkCommentBelongsToThread = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-
-    mockReplyRepository.addReply = jest.fn()
-      .mockImplementation(() => new AddedReply({
-        id: 'comment-123',
-        content: 'reply content',
-        owner: 'user-123',
-      }));
+    mockCommentRepository.checkCommentBelongsToThread = jest.fn(() => Promise.resolve());
+    mockReplyRepository.addReply = jest.fn(() => new AddedReply({
+      id: 'comment-123',
+      content: 'reply content',
+      owner: 'user-123',
+    }));
 
     /** creating use case instance */
     const addReplyUseCase = new AddReplyUseCase({

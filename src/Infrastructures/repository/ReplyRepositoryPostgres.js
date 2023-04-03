@@ -5,11 +5,10 @@ const DetailReply = require('../../Domains/replies/entities/DetailReply');
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 
 class ReplyRepositoryPostgres extends ReplyRepository {
-  constructor(pool, idGenerator, dateGenerator) {
+  constructor(pool, idGenerator) {
     super();
     this._pool = pool;
     this._idGenerator = idGenerator;
-    this._dateGenerator = dateGenerator;
   }
 
   async addReply(newReply) {
@@ -17,11 +16,10 @@ class ReplyRepositoryPostgres extends ReplyRepository {
       commentId, owner, content,
     } = newReply;
     const id = `reply-${this._idGenerator(10)}`;
-    const date = new this._dateGenerator().toISOString();
 
     const query = {
-      text: 'INSERT INTO replies VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
-      values: [id, commentId, owner, content, date],
+      text: 'INSERT INTO replies VALUES($1, $2, $3, $4) RETURNING id, content, owner',
+      values: [id, commentId, owner, content],
     };
 
     const result = await this._pool.query(query);
@@ -72,19 +70,23 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     const query = {
       text: `SELECT replies.id, comments.id AS comment_id, 
               replies.is_deleted,
-              replies.content AS content, 
+              replies.content AS content,
               replies.date,
               users.username 
               FROM replies 
               INNER JOIN comments ON replies.comment_id = comments.id
               INNER JOIN users ON replies.owner = users.id
               WHERE comments.thread_id = $1
-              ORDER BY date ASC`,
+              ORDER BY replies.date ASC`,
       values: [id],
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map((entry) => new DetailReply({ ...entry, commentId: entry.comment_id }));
+    return result.rows.map((entry) => new DetailReply({
+      ...entry,
+      commentId: entry.comment_id,
+      date: entry.date.toISOString(),
+    }));
   }
 }
 

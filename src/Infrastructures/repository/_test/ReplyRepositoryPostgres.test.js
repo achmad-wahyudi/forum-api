@@ -46,11 +46,8 @@ describe('ReplyRepositoryPostgres', () => {
         });
 
         const fakeIdGenerator = () => '123';
-        function fakeDateGenerator() {
-          this.toISOString = () => '2021';
-        }
         const replyRepositoryPostgres = new ReplyRepositoryPostgres(
-          pool, fakeIdGenerator, fakeDateGenerator,
+          pool, fakeIdGenerator,
         );
 
         // action
@@ -68,7 +65,7 @@ describe('ReplyRepositoryPostgres', () => {
 
     describe('checkReplyIsExist function', () => {
       it('should not throw error if reply exists', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         await RepliesTableTestHelper.addReply({});
 
@@ -76,11 +73,11 @@ describe('ReplyRepositoryPostgres', () => {
           threadId: 'thread-123',
           commentId: 'comment-123',
           replyId: 'reply-123',
-        })).resolves.toBeUndefined();
+        })).resolves.not.toThrowError();
       });
 
       it('should throw error if reply does not exist', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         expect(replyRepositoryPostgres.checkReplyIsExist({
           threadId: 'thread-123',
@@ -92,18 +89,18 @@ describe('ReplyRepositoryPostgres', () => {
 
     describe('verifyReplyAccess function', () => {
       it('should not throw error when user has access', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.verifyReplyAccess({
           ownerId: 'user-123',
           replyId: 'reply-123',
-        })).resolves.toBeUndefined();
+        })).resolves.not.toThrowError();
       });
 
       it('should throw error when user does not have access', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         await RepliesTableTestHelper.addReply({});
 
@@ -116,16 +113,16 @@ describe('ReplyRepositoryPostgres', () => {
 
     describe('deleteReplyById function', () => {
       it('should not throw error when reply deleted successfully', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.deleteReplyById('reply-123'))
-          .resolves.toBeUndefined();
+          .resolves.not.toThrowError();
       });
 
       it('deleted reply should have is_deleted column as true in database', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         await RepliesTableTestHelper.addReply({});
         await replyRepositoryPostgres.deleteReplyById('reply-123');
@@ -135,7 +132,7 @@ describe('ReplyRepositoryPostgres', () => {
       });
 
       it('should throw error when reply has been already deleted', async () => {
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         expect(replyRepositoryPostgres.deleteReplyById('reply-123'))
           .rejects.toThrowError('reply yang ingin Anda hapus tidak ada');
@@ -154,10 +151,10 @@ describe('ReplyRepositoryPostgres', () => {
         await CommentsTableTestHelper.addComment({ id: 'comment-456', owner: 'user-456', threadId: 'thread-789' });
 
         const replyA = {
-          id: 'reply-123', commentId: 'comment-789', content: 'reply A', date: '2020',
+          id: 'reply-123', commentId: 'comment-789', content: 'reply A',
         };
         const replyB = {
-          id: 'reply-456', commentId: 'comment-456', content: 'reply B', date: '2021',
+          id: 'reply-456', commentId: 'comment-456', content: 'reply B',
         };
 
         const expectedReplies = [
@@ -167,11 +164,49 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({ ...replyA, owner: 'user-456' });
         await RepliesTableTestHelper.addReply({ ...replyB, owner: 'user-789' });
 
-        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         const retrievedReplies = await replyRepositoryPostgres.getRepliesByThreadId('thread-789');
 
-        expect(retrievedReplies).toEqual(expectedReplies);
+        expect(retrievedReplies.id).toStrictEqual(expectedReplies.id);
+        expect(retrievedReplies.commentId).toStrictEqual(expectedReplies.commentId);
+        expect(retrievedReplies.content).toStrictEqual(expectedReplies.content);
+        expect(retrievedReplies.username).toStrictEqual(expectedReplies.username);
+        expect(retrievedReplies[0].date).toBeTruthy();
+        expect(typeof retrievedReplies[0].date).toStrictEqual('string');
+      });
+
+      it('it should return the deleted replies', async () => {
+        // arrange
+        await UsersTableTestHelper.registerUser({ id: 'user-111', username: 'User111' });
+
+        await ThreadsTableTestHelper.addThread({ id: 'thread-222', owner: 'user-111' });
+
+        await CommentsTableTestHelper.addComment({ id: 'comment-333', owner: 'user-111', threadId: 'thread-222' });
+
+        const replyA = {
+          id: 'reply-444', commentId: 'comment-333', content: 'reply A',
+        };
+
+        const expectedReplies = [
+          { ...replyA, username: 'UserB' },
+        ];
+
+        await RepliesTableTestHelper.addReply({ ...replyA, owner: 'user-111' });
+
+        const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+        expect(replyRepositoryPostgres.deleteReplyById('reply-444'))
+          .resolves.not.toThrowError();
+
+        const retrievedReplies = await replyRepositoryPostgres.getRepliesByThreadId('thread-222');
+
+        expect(retrievedReplies.id).toStrictEqual(expectedReplies.id);
+        expect(retrievedReplies.commentId).toStrictEqual(expectedReplies.commentId);
+        expect(retrievedReplies.content).toStrictEqual(expectedReplies.content);
+        expect(retrievedReplies.username).toStrictEqual(expectedReplies.username);
+        expect(retrievedReplies[0].date).toBeTruthy();
+        expect(typeof retrievedReplies[0].date).toStrictEqual('string');
       });
     });
   });

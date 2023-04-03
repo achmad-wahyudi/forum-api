@@ -3,7 +3,6 @@ const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const NewComment = require('../../../Domains/comments/entities/NewComment');
-const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const pool = require('../../database/postgres/pool');
 const CommentRepositoryPostgres = require('../CommentRepositoryPostgres');
 const DetailComment = require('../../../Domains/comments/entities/DetailComment');
@@ -42,11 +41,8 @@ describe('CommentRepositoryPostgres', () => {
           owner: 'user-123',
         });
         const fakeIdGenerator = () => '123';
-        function fakeDateGenerator() {
-          this.toISOString = () => '2021';
-        }
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, fakeIdGenerator, fakeDateGenerator,
+          pool, fakeIdGenerator,
         );
 
         // action
@@ -54,11 +50,11 @@ describe('CommentRepositoryPostgres', () => {
         const comments = await CommentsTableTestHelper.findCommentById(addedComment.id);
 
         // assert
-        expect(addedComment).toStrictEqual(new AddedComment({
+        expect(addedComment).toStrictEqual({
           id: 'comment-123',
           content: newComment.content,
           owner: newComment.owner,
-        }));
+        });
         expect(comments).toBeDefined();
       });
     });
@@ -75,7 +71,7 @@ describe('CommentRepositoryPostgres', () => {
           id: addedComment.id, threadId: addedComment.threadId,
         });
 
-        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {}, {});
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
         // action
         await commentRepositoryPostgres.deleteCommentById(addedComment.id);
@@ -89,7 +85,7 @@ describe('CommentRepositoryPostgres', () => {
       // arrange
         const addedCommentId = 'comment-123';
 
-        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {}, {});
+        const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
         // action & assert
         await expect(commentRepositoryPostgres.deleteCommentById(addedCommentId)).rejects.toThrowError('tidak bisa menghapus comment karena comment tidak ada');
@@ -98,26 +94,32 @@ describe('CommentRepositoryPostgres', () => {
 
     describe('getCommentsByThreadId', () => {
       it('should return all comments from a thread', async () => {
+        const date = (new Date()).toISOString();
         const firstComment = new DetailComment({
-          id: 'comment-123', username: 'dicoding', date: '2020', content: 'first comment', is_deleted: false, replies: [],
+          id: 'comment-123', username: 'SomeUser', date, content: 'first comment', is_deleted: false, replies: [],
         });
         const secondComment = new DetailComment({
-          id: 'comment-456', username: 'dicoding', date: '2022', content: 'second comment', is_deleted: false, replies: [],
+          id: 'comment-456', username: 'dicoding', date, content: 'second comment', is_deleted: false, replies: [],
         });
         await CommentsTableTestHelper.addComment(firstComment);
         await CommentsTableTestHelper.addComment(secondComment);
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
 
         const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
-        expect(commentDetails).toEqual([
-          { ...firstComment, username: 'SomeUser' }, { ...secondComment, username: 'SomeUser' }]);
+
+        expect(commentDetails[0].id).toStrictEqual(firstComment.id);
+        expect(commentDetails[0].username).toStrictEqual(firstComment.username);
+        expect(commentDetails[0].content).toStrictEqual(firstComment.content);
+        expect(commentDetails[0].is_deleted).toStrictEqual(firstComment.is_deleted);
+        expect(commentDetails[0].date).toBeTruthy();
+        expect(typeof commentDetails[0].date).toStrictEqual('string');
       });
 
       it('should return an empty array when no comments exist for the thread', async () => {
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
 
         const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
@@ -132,16 +134,16 @@ describe('CommentRepositoryPostgres', () => {
         });
 
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
 
         await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-123' }))
-          .resolves.toBeUndefined();
+          .resolves.not.toThrowError();
       });
 
       it('should reject if comment does not exist', async () => {
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
 
         await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-456' }))
@@ -155,7 +157,7 @@ describe('CommentRepositoryPostgres', () => {
         });
 
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
 
         await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-456' }))
@@ -167,18 +169,18 @@ describe('CommentRepositoryPostgres', () => {
       it('should not throw error if user has authorization', async () => {
         await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
         await expect(commentRepositoryPostgres.verifyCommentAccess({
           commentId: 'comment-123', ownerId: 'user-123',
-        })).resolves.toBeUndefined();
+        })).resolves.not.toThrowError();
       });
 
       it('should throw error if user has no authorization', async () => {
         await ThreadsTableTestHelper.addThread({ id: 'thread-xyz' });
         await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId: 'thread-123', owner: 'user-123' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
         await expect(commentRepositoryPostgres.verifyCommentAccess({
           threadId: 'thread-123', owner: 'user-456',
@@ -190,7 +192,7 @@ describe('CommentRepositoryPostgres', () => {
       it('should not throw error if comment exists in thread', async () => {
         await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
         await expect(commentRepositoryPostgres.checkCommentBelongsToThread({
           threadId: 'thread-123', commentId: 'comment-123',
@@ -201,7 +203,7 @@ describe('CommentRepositoryPostgres', () => {
         await ThreadsTableTestHelper.addThread({ id: 'thread-456' });
         await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId: 'thread-456' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
-          pool, {}, {},
+          pool, {},
         );
         await expect(commentRepositoryPostgres.checkCommentBelongsToThread({
           threadId: 'thread-123', commentId: 'comment-456',

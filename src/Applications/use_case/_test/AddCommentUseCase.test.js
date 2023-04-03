@@ -3,7 +3,6 @@ const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const AddCommentUseCase = require('../AddCommentUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
-const NewThread = require('../../../Domains/threads/entities/NewThread');
 
 describe('AddCommentUseCase', () => {
   it('should orchestrate the add comment use case properly', async () => {

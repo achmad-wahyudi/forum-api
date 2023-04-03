@@ -1,10 +1,9 @@
 class DetailComment {
   constructor(payload) {
-    this._verifyPayload(payload);
-
     const {
-      id, username, date, content, replies, is_deleted: isDeleted,
+      id, username, date, content, replies = [], is_deleted: isDeleted,
     } = payload;
+    this._verifyPayload(payload);
 
     this.id = id;
     this.username = username;
@@ -20,7 +19,7 @@ class DetailComment {
   }
 
   _verifyPayload({
-    id, username, date, content, replies,
+    id, username, date, content, replies = [],
   }) {
     if (!id || !username || !date || !content || !replies) {
       throw new Error('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');

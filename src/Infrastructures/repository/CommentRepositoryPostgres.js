@@ -5,11 +5,10 @@ const AuthorizationError = require('../../Commons/exceptions/AuthorizationError'
 const DetailComment = require('../../Domains/comments/entities/DetailComment');
 
 class CommentRepositoryPostgres extends CommentRepository {
-  constructor(pool, idGenerator, dateGenerator) {
+  constructor(pool, idGenerator) {
     super();
     this._pool = pool;
     this._idGenerator = idGenerator;
-    this._dateGenerator = dateGenerator;
   }
 
   async addComment(newComment) {
@@ -17,15 +16,14 @@ class CommentRepositoryPostgres extends CommentRepository {
       content, threadId, owner,
     } = newComment;
     const id = `comment-${this._idGenerator(10)}`;
-    const date = new this._dateGenerator().toISOString();
 
     const query = {
-      text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5) RETURNING id, content, owner',
-      values: [id, threadId, owner, content, date],
+      text: 'INSERT INTO comments VALUES($1, $2, $3, $4) RETURNING id, content, owner',
+      values: [id, threadId, owner, content],
     };
 
     const result = await this._pool.query(query);
-    return new AddedComment({ ...result.rows[0] });
+    return result.rows[0];
   }
 
   async deleteCommentById(commentId) {
@@ -84,7 +82,10 @@ class CommentRepositoryPostgres extends CommentRepository {
       values: [threadId],
     };
     const result = await this._pool.query(query);
-    return result.rows.map((entry) => new DetailComment({ ...entry, replies: [] }));
+    return result.rows.map((entry) => new DetailComment({
+      ...entry,
+      date: entry.date.toISOString(),
+    }));
   }
 
   async checkCommentBelongsToThread({ threadId, commentId }) {
