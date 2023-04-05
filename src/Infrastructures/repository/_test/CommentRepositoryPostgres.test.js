@@ -96,10 +96,10 @@ describe('CommentRepositoryPostgres', () => {
       it('should return all comments from a thread', async () => {
         const date = (new Date()).toISOString();
         const firstComment = new DetailComment({
-          id: 'comment-123', username: 'SomeUser', date, content: 'first comment', is_deleted: false, replies: [],
+          id: 'comment-123', username: 'SomeUser', date, content: 'first comment', is_deleted: false, replies: [], likeCount: 0,
         });
         const secondComment = new DetailComment({
-          id: 'comment-456', username: 'dicoding', date, content: 'second comment', is_deleted: false, replies: [],
+          id: 'comment-456', username: 'dicoding', date, content: 'second comment', is_deleted: false, replies: [], likeCount: 0,
         });
         await CommentsTableTestHelper.addComment(firstComment);
         await CommentsTableTestHelper.addComment(secondComment);
@@ -113,6 +113,7 @@ describe('CommentRepositoryPostgres', () => {
         expect(commentDetails[0].username).toStrictEqual(firstComment.username);
         expect(commentDetails[0].content).toStrictEqual(firstComment.content);
         expect(commentDetails[0].is_deleted).toStrictEqual(firstComment.is_deleted);
+        expect(commentDetails[0].likeCount).toStrictEqual(firstComment.likeCount);
         expect(commentDetails[0].date).toBeTruthy();
         expect(typeof commentDetails[0].date).toStrictEqual('string');
       });

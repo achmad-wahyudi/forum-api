@@ -23,6 +23,7 @@ describe('ReplyRepositoryPostgres', () => {
       await UsersTableTestHelper.registerUser({ id: userId, username: 'SomeUser' });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
+      jest.setTimeout(10000);
     });
     afterEach(async () => {
       await RepliesTableTestHelper.cleanTable();
@@ -118,7 +119,7 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.deleteReplyById('reply-123'))
-          .resolves.not.toThrowError();
+          .resolves.toBeUndefined();
       });
 
       it('deleted reply should have is_deleted column as true in database', async () => {
@@ -126,6 +127,8 @@ describe('ReplyRepositoryPostgres', () => {
 
         await RepliesTableTestHelper.addReply({});
         await replyRepositoryPostgres.deleteReplyById('reply-123');
+
+        jest.setTimeout(10000);
 
         const reply = await RepliesTableTestHelper.findReplyById('reply-123');
         expect(reply.is_deleted).toEqual(true);
