@@ -118,7 +118,7 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.deleteReplyById('reply-123'))
-          .resolves.not.toThrowError();
+          .resolves.toBeUndefined();
       });
 
       it('deleted reply should have is_deleted column as true in database', async () => {
