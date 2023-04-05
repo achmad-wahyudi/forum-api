@@ -19,6 +19,8 @@ const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
 const CommentRepository = require('../Domains/comments/CommentRepository');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
 const ThreadRepository = require('../Domains/threads/ThreadRepository');
+const LikeRepository = require('../Domains/likes/LikeRepository');
+const LikeRepositoryPostgres = require('./repository/LikeRepositoryPostgres');
 
 // use case
 const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
@@ -36,6 +38,7 @@ const AuthenticationRepository = require('../Domains/authentications/Authenticat
 const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
+const AddLikeUseCase = require('../Applications/use_case/AddLikeUseCase');
 
 // creating container
 const container = createContainer();
@@ -98,6 +101,20 @@ container.register([
   {
     key: UserRepository.name,
     Class: UserRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+      ],
+    },
+  },
+  {
+    key: LikeRepository.name,
+    Class: LikeRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -255,6 +272,27 @@ container.register([
         {
           name: 'replyRepository',
           internal: ReplyRepository.name,
+        },
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: AddLikeUseCase.name,
+    Class: AddLikeUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'likeRepository',
+          internal: LikeRepository.name,
         },
       ],
     },
