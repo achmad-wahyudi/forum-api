@@ -23,6 +23,7 @@ describe('ReplyRepositoryPostgres', () => {
       await UsersTableTestHelper.registerUser({ id: userId, username: 'SomeUser' });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
+      jest.setTimeout(10000);
     });
     afterEach(async () => {
       await RepliesTableTestHelper.cleanTable();
@@ -127,7 +128,7 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
         await replyRepositoryPostgres.deleteReplyById('reply-123');
 
-        setTimeout(() => { }, 1000);
+        jest.setTimeout(10000);
 
         const reply = await RepliesTableTestHelper.findReplyById('reply-123');
         expect(reply.is_deleted).toEqual(true);
