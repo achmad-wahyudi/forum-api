@@ -127,6 +127,8 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
         await replyRepositoryPostgres.deleteReplyById('reply-123');
 
+        setTimeout(() => { }, 1000);
+
         const reply = await RepliesTableTestHelper.findReplyById('reply-123');
         expect(reply.is_deleted).toEqual(true);
       });
