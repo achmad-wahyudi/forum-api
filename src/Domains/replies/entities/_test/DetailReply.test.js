@@ -29,7 +29,7 @@ describe('a DetailReply entity', () => {
   it('should create AddedReply object properly', () => {
     const payload = {
       id: 'reply-123',
-      commentId: 'comment-123',
+      commentId: 'comment-1111111',
       content: 'some reply',
       date: '2021',
       username: 'John Doe',

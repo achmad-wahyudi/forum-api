@@ -6,6 +6,8 @@ const pool = require('../../database/postgres/pool');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
 
 describe('UserRepositoryPostgres', () => {
+  const fakeIdGenerator = () => '1111111111';
+
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
   });
@@ -41,14 +43,14 @@ describe('UserRepositoryPostgres', () => {
         password: 'secret_password',
         fullname: 'Dicoding Indonesia',
       });
-      const fakeIdGenerator = () => '123'; // stub!
+
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
       await userRepositoryPostgres.registerUser(registerUser);
 
       // Assert
-      const users = await UsersTableTestHelper.findUsersById('user-123');
+      const users = await UsersTableTestHelper.findUsersById('user-1111111111');
       expect(users).toHaveLength(1);
     });
 
@@ -59,7 +61,6 @@ describe('UserRepositoryPostgres', () => {
         password: 'secret_password',
         fullname: 'Dicoding Indonesia',
       });
-      const fakeIdGenerator = () => '123'; // stub!
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
 
       // Action
@@ -67,7 +68,7 @@ describe('UserRepositoryPostgres', () => {
 
       // Assert
       expect(registeredUser).toStrictEqual(new RegisteredUser({
-        id: 'user-123',
+        id: 'user-1111111111',
         username: 'dicoding',
         fullname: 'Dicoding Indonesia',
       }));
@@ -130,7 +131,7 @@ describe('UserRepositoryPostgres', () => {
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
 
       // Action & Assert
-      await expect(userRepositoryPostgres.getUsernameById('user-123'))
+      await expect(userRepositoryPostgres.getUsernameById('user-1111111111'))
         .rejects
         .toThrowError(InvariantError);
     });

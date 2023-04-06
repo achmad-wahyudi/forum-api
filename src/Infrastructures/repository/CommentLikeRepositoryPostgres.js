@@ -1,14 +1,14 @@
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
-const LikeRepository = require('../../Domains/likes/LikeRepository');
+const CommentLikeRepository = require('../../Domains/comment-likes/CommentLikeRepository');
 
-class LikeRepositoryPostgres extends LikeRepository {
+class CommentLikeRepositoryPostgres extends CommentLikeRepository {
   constructor(pool, idGenerator) {
     super();
     this._pool = pool;
     this._idGenerator = idGenerator;
   }
 
-  async checkLikeIsExists({ commentId, owner }) {
+  async verifyLikeAvalaibility({ commentId, owner }) {
     const query = {
       text: 'SELECT 1 FROM likes WHERE comment_id = $1 AND owner = $2',
       values: [commentId, owner],
@@ -17,9 +17,9 @@ class LikeRepositoryPostgres extends LikeRepository {
     return !!(result.rows.length);
   }
 
-  async addLike(newLike) {
+  async addCommentLike(newCommentLike) {
     const id = `like-${this._idGenerator(10)}`;
-    const { commentId, owner } = newLike;
+    const { commentId, owner } = newCommentLike;
 
     const query = {
       text: 'INSERT INTO likes (id, comment_id, owner) VALUES ($1, $2, $3) RETURNING id',
@@ -39,7 +39,7 @@ class LikeRepositoryPostgres extends LikeRepository {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('tidak bisa menghapus like karena like tidak ada');
+      throw new NotFoundError('like tidak tersedia!');
     }
   }
 
@@ -54,4 +54,4 @@ class LikeRepositoryPostgres extends LikeRepository {
   }
 }
 
-module.exports = LikeRepositoryPostgres;
+module.exports = CommentLikeRepositoryPostgres;

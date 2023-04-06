@@ -11,10 +11,10 @@ describe('AddThreadUseCase', () => {
       body: 'dolor sit amet',
     };
 
-    const owner = 'user-123';
+    const owner = 'user-1111111111';
 
     const expectedAddedThread = new AddedThread({
-      id: 'thread-123',
+      id: 'thread-11111111',
       title: 'lorem ipsum',
       owner,
     });
@@ -25,9 +25,9 @@ describe('AddThreadUseCase', () => {
     /* mocking needed function */
     mockThreadRepository.addThread = jest.fn()
       .mockImplementation(() => new AddedThread({
-        id: 'thread-123',
+        id: 'thread-11111111',
         title: 'lorem ipsum',
-        owner: 'user-123',
+        owner: 'user-1111111111',
       }));
 
     /* creating use case instance */

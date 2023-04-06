@@ -3,7 +3,7 @@ const pool = require('../src/Infrastructures/database/postgres/pool');
 
 const CommentsTableTestHelper = {
   async addComment({
-    id = 'comment-123', threadId = 'thread-123', owner = 'user-123', content = 'some comment', isDeleted = false,
+    id = 'comment-1111111', threadId = 'thread-11111111', owner = 'user-1111111111', content = 'some comment', isDeleted = false,
   }) {
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5)',

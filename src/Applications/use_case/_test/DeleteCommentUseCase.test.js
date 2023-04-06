@@ -5,14 +5,14 @@ const DeleteCommentUseCase = require('../DeleteCommentUseCase');
 describe('DeleteCommentUseCase', () => {
   it('should orchestrate the delete comment use case properly', async () => {
     // arrange
-    const userIdFromAccessToken = 'user-123';
+    const userIdFromAccessToken = 'user-1111111111';
     const useCaseParam = {
-      threadId: 'thread-123',
-      commentId: 'comment-123',
+      threadId: 'thread-11111111',
+      commentId: 'comment-1111111',
     };
 
     const expectedDeletedComment = {
-      id: 'comment-123',
+      id: 'comment-1111111',
     };
 
     /** creating dependancies for use case */

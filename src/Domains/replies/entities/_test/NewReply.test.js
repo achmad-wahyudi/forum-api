@@ -4,8 +4,8 @@ describe('a NewReply entity', () => {
   it('should throw error if payload does not meeet criteria', () => {
     // arrange
     const payload = {
-      commentId: 'comment-123',
-      owner: 'user-123',
+      commentId: 'comment-1111111',
+      owner: 'user-1111111111',
     };
 
     // action & assert
@@ -25,9 +25,9 @@ describe('a NewReply entity', () => {
 
   it('should create newReply object properly', () => {
     const payload = {
-      commentId: 'comment-123',
+      commentId: 'comment-1111111',
       content: 'some reply',
-      owner: 'user-123',
+      owner: 'user-1111111111',
     };
 
     const newReply = new NewReply(payload);

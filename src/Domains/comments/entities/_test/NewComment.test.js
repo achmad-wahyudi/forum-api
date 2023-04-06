@@ -5,8 +5,8 @@ describe('a NewComment entity', () => {
     // arrange
     const payload = {
       content: 'some comment',
-      threadId: 'thread-123,',
-      userId: 'user-123',
+      threadId: 'thread-11111111,',
+      userId: 'user-1111111111',
     };
 
     // action & assert
@@ -28,8 +28,8 @@ describe('a NewComment entity', () => {
   it('should create NewComment object properly', () => {
     const payload = {
       content: 'some kind of body',
-      threadId: 'thread-123',
-      owner: 'user-123',
+      threadId: 'thread-11111111',
+      owner: 'user-1111111111',
       username: 'John Doe',
     };
 

@@ -32,7 +32,7 @@ describe('endpoints concerning CRUD on comments', () => {
       /* login and add thread to get accessToken and threadId */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
+      const threadId = 'thread-11111111';
 
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
 
@@ -67,7 +67,7 @@ describe('endpoints concerning CRUD on comments', () => {
       /* login and add thread to get accessToken and threadId */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
+      const threadId = 'thread-11111111';
 
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
 
@@ -100,7 +100,7 @@ describe('endpoints concerning CRUD on comments', () => {
       /* login and add thread to get accessToken and threadId */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
+      const threadId = 'thread-11111111';
 
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
 
@@ -130,8 +130,8 @@ describe('endpoints concerning CRUD on comments', () => {
       const { userId, accessToken } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
 
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
 
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
@@ -158,8 +158,8 @@ describe('endpoints concerning CRUD on comments', () => {
       /* create first user and their comment */
       const { userId: firstUserId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server, username: 'JohnDoe' });
-      const firstThreadId = 'thread-123';
-      const firstCommentId = 'comment-123';
+      const firstThreadId = 'thread-11111111';
+      const firstCommentId = 'comment-1111111';
       await ThreadableTestHelper.addThread({ id: firstThreadId, owner: firstUserId });
       await CommentsTableTestHelper.addComment({ id: firstCommentId, owner: firstUserId });
 

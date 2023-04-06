@@ -17,9 +17,9 @@ describe('ReplyRepositoryPostgres', () => {
 
   describe('behavior test', () => {
     beforeAll(async () => {
-      const userId = 'user-123';
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const userId = 'user-1111111111';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       await UsersTableTestHelper.registerUser({ id: userId, username: 'SomeUser' });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
@@ -41,8 +41,8 @@ describe('ReplyRepositoryPostgres', () => {
       it('addReply function should add reply in database', async () => {
         // arrange
         const newReply = new NewReply({
-          commentId: 'comment-123',
-          owner: 'user-123',
+          commentId: 'comment-1111111',
+          owner: 'user-1111111111',
           content: 'some reply',
         });
 
@@ -71,8 +71,8 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.checkReplyIsExist({
-          threadId: 'thread-123',
-          commentId: 'comment-123',
+          threadId: 'thread-11111111',
+          commentId: 'comment-1111111',
           replyId: 'reply-123',
         })).resolves.not.toThrowError();
       });
@@ -81,8 +81,8 @@ describe('ReplyRepositoryPostgres', () => {
         const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
         expect(replyRepositoryPostgres.checkReplyIsExist({
-          threadId: 'thread-123',
-          commentId: 'comment-123',
+          threadId: 'thread-11111111',
+          commentId: 'comment-1111111',
           replyId: 'reply-789',
         })).rejects.toThrowError('reply yang Anda cari tidak ada');
       });
@@ -95,7 +95,7 @@ describe('ReplyRepositoryPostgres', () => {
         await RepliesTableTestHelper.addReply({});
 
         expect(replyRepositoryPostgres.verifyReplyAccess({
-          ownerId: 'user-123',
+          ownerId: 'user-1111111111',
           replyId: 'reply-123',
         })).resolves.not.toThrowError();
       });

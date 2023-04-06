@@ -4,7 +4,7 @@ describe('a AddedComment entity', () => {
   it('should throw error if payload does not meet criteria', () => {
     // arrange
     const payload = {
-      id: 'comment-123',
+      id: 'comment-1111111',
       content: 'some comment',
     };
 
@@ -25,9 +25,9 @@ describe('a AddedComment entity', () => {
 
   it('should create AddedComment object properly', () => {
     const payload = {
-      id: 'comment-123',
+      id: 'comment-1111111',
       content: 'somekind content',
-      owner: 'user-123',
+      owner: 'user-1111111111',
     };
 
     const addedComment = new AddedComment(payload);

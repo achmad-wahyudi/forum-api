@@ -4,12 +4,12 @@ class GetThreadUseCase {
     threadRepository,
     commentRepository,
     replyRepository,
-    likeRepository,
+    commentLikeRepository,
   }) {
     this._threadRepository = threadRepository;
     this._commentRepository = commentRepository;
     this._replyRepository = replyRepository;
-    this._likeRepository = likeRepository;
+    this._commentLikeRepository = commentLikeRepository;
   }
 
   async execute(useCaseParam) {
@@ -38,7 +38,7 @@ class GetThreadUseCase {
   }
 
   async _getLikeCountForComments(comment) {
-    return this._likeRepository.getLikeCountByCommentId(comment.id);
+    return this._commentLikeRepository.getLikeCountByCommentId(comment.id);
   }
 }
 

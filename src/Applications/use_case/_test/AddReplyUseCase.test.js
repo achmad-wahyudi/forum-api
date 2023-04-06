@@ -13,14 +13,14 @@ describe('AddReplyUseCase', () => {
     };
 
     const useCaseParam = {
-      threadId: 'thread-123',
-      commentId: 'comment-123',
+      threadId: 'thread-11111111',
+      commentId: 'comment-1111111',
     };
 
-    const userIdFromAccessToken = 'user-123';
+    const userIdFromAccessToken = 'user-1111111111';
 
     const expectedAddedReply = new AddedReply({
-      id: 'comment-123',
+      id: 'comment-1111111',
       content: useCasePayload.content,
       owner: userIdFromAccessToken,
     });
@@ -33,9 +33,9 @@ describe('AddReplyUseCase', () => {
     /** mocking needed functions */
     mockCommentRepository.checkCommentBelongsToThread = jest.fn(() => Promise.resolve());
     mockReplyRepository.addReply = jest.fn(() => new AddedReply({
-      id: 'comment-123',
+      id: 'comment-1111111',
       content: 'reply content',
-      owner: 'user-123',
+      owner: 'user-1111111111',
     }));
 
     /** creating use case instance */
