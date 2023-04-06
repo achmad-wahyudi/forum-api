@@ -3,10 +3,10 @@ const Jwt = require('@hapi/jwt');
 const ClientError = require('../../Commons/exceptions/ClientError');
 const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
 const users = require('../../Interfaces/http/api/users');
-const comments = require('../../Interfaces/http/api/comments');
-const replies = require('../../Interfaces/http/api/replies');
+const commentsThread = require('../../Interfaces/http/api/comments-thread');
+const repliesComment = require('../../Interfaces/http/api/replies-comment');
 const threads = require('../../Interfaces/http/api/threads');
-const commentLikes = require('../../Interfaces/http/api/comment-likes');
+const likesComment = require('../../Interfaces/http/api/likes-comment');
 const authentications = require('../../Interfaces/http/api/authentications');
 
 const createServer = async (container) => {
@@ -39,11 +39,11 @@ const createServer = async (container) => {
       options: { container },
     },
     {
-      plugin: comments,
+      plugin: commentsThread,
       options: { container },
     },
     {
-      plugin: replies,
+      plugin: repliesComment,
       options: { container },
     },
     {
@@ -55,7 +55,7 @@ const createServer = async (container) => {
       options: { container },
     },
     {
-      plugin: commentLikes,
+      plugin: likesComment,
       options: { container },
     },
   ]);

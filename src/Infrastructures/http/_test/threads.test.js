@@ -2,20 +2,20 @@ const pool = require('../../database/postgres/pool');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
-const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
+const CommentsThreadTableTestHelper = require('../../../../tests/CommentsThreadTableTestHelper');
 const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
-const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
-const LikesTableTestHelper = require('../../../../tests/CommentLikesTableTestHelper');
+const RepliesCommentTableTestHelper = require('../../../../tests/RepliesCommentTableTestHelper');
+const LikesTableTestHelper = require('../../../../tests/LikesCommentTableTestHelper');
 
 describe('endpoints concerning CRUD on threads', () => {
   afterEach(async () => {
+    await AuthenticationsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ThreadableTestHelper.cleanTable();
-    await AuthenticationsTableTestHelper.cleanTable();
-    await CommentsTableTestHelper.cleanTable();
-    await RepliesTableTestHelper.cleanTable();
+    await CommentsThreadTableTestHelper.cleanTable();
+    await RepliesCommentTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -32,7 +32,7 @@ describe('endpoints concerning CRUD on threads', () => {
       };
 
       const server = await createServer(container);
-      const serverHelper = await ServerTestHelper.getAccessTokenAndUserIdHelper({ server });
+      const serverHelper = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
       // action
       const response = await server.inject({
@@ -88,7 +88,7 @@ describe('endpoints concerning CRUD on threads', () => {
       const server = await createServer(container);
 
       /* add user and gain access token */
-      const serverHelper = await ServerTestHelper.getAccessTokenAndUserIdHelper({ server });
+      const serverHelper = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
       // action
       const response = await server.inject({
@@ -117,7 +117,7 @@ describe('endpoints concerning CRUD on threads', () => {
       const server = await createServer(container);
 
       /* add user and gain access token */
-      const { accessToken } = await ServerTestHelper.getAccessTokenAndUserIdHelper({ server });
+      const { accessToken } = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
       // action
       const response = await server.inject({
@@ -144,11 +144,11 @@ describe('endpoints concerning CRUD on threads', () => {
       await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: 'JohnDoe' });
       await UsersTableTestHelper.registerUser({ id: 'user-456', username: 'JaneDoe' });
       await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-1111111111' });
-      await CommentsTableTestHelper.addComment({ id: 'comment-1111111', threadId, owner: 'user-1111111111' });
-      await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId, owner: 'user-1111111111' });
-      await RepliesTableTestHelper.addReply({ id: 'reply-123', commentId: 'comment-456', owner: 'user-1111111111' });
-      await RepliesTableTestHelper.addReply({ id: 'reply-456', commentId: 'comment-1111111', owner: 'user-456' });
-      await LikesTableTestHelper.addCommentLike({ id: 'like-1111111111', commentId: 'comment-1111111', owner: 'user-1111111111' });
+      await CommentsThreadTableTestHelper.addCommentThread({ id: 'comment-1111111', threadId, owner: 'user-1111111111' });
+      await CommentsThreadTableTestHelper.addCommentThread({ id: 'comment-456', threadId, owner: 'user-1111111111' });
+      await RepliesCommentTableTestHelper.addReplyComment({ id: 'reply-111111111', commentId: 'comment-456', owner: 'user-1111111111' });
+      await RepliesCommentTableTestHelper.addReplyComment({ id: 'reply-456', commentId: 'comment-1111111', owner: 'user-456' });
+      await LikesTableTestHelper.addLikeComment({ id: 'like-1111111111', commentId: 'comment-1111111', owner: 'user-1111111111' });
 
       // action
       const response = await server.inject({
