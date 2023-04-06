@@ -3,9 +3,9 @@ const DetailComment = require('../DetailComment');
 describe('a DetailComment entity', () => {
   it('should create DetailComment object properly', () => {
     const payload = {
-      id: 'comment-123',
+      id: 'comment-1111111',
       username: 'some comment',
-      date: 'thread-123,',
+      date: 'thread-11111111,',
       content: 'some comment',
       replies: [],
       likeCount: 0,
@@ -24,9 +24,9 @@ describe('a DetailComment entity', () => {
   it('should throw error if payload does not meet criteria', () => {
     // arrange
     const payload = {
-      id: 'comment-123',
+      id: 'comment-1111111',
       username: 'some comment',
-      date: 'thread-123,',
+      date: 'thread-11111111,',
     };
 
     // action & assert
@@ -48,9 +48,9 @@ describe('a DetailComment entity', () => {
 
   it('should create DetailComment object properly', () => {
     const payload = {
-      id: 'comment-123',
-      username: 'user-123',
-      date: 'thread-123,',
+      id: 'comment-1111111',
+      username: 'user-1111111111',
+      date: 'thread-11111111,',
       content: 'some content',
       is_deleted: true,
       replies: [],

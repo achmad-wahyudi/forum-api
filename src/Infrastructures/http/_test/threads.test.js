@@ -7,7 +7,7 @@ const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
-const LikesTableTestHelper = require('../../../../tests/LikesTableTestHelper');
+const LikesTableTestHelper = require('../../../../tests/CommentLikesTableTestHelper');
 
 describe('endpoints concerning CRUD on threads', () => {
   afterEach(async () => {
@@ -140,15 +140,15 @@ describe('endpoints concerning CRUD on threads', () => {
     it('should respond with 200 with thread details and comments', async () => {
       const server = await createServer(container);
 
-      const threadId = 'thread-123';
-      await UsersTableTestHelper.registerUser({ id: 'user-123', username: 'JohnDoe' });
+      const threadId = 'thread-11111111';
+      await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: 'JohnDoe' });
       await UsersTableTestHelper.registerUser({ id: 'user-456', username: 'JaneDoe' });
-      await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-123' });
-      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId, owner: 'user-123' });
-      await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId, owner: 'user-123' });
-      await RepliesTableTestHelper.addReply({ id: 'reply-123', commentId: 'comment-456', owner: 'user-123' });
-      await RepliesTableTestHelper.addReply({ id: 'reply-456', commentId: 'comment-123', owner: 'user-456' });
-      await LikesTableTestHelper.addLike({ id: 'like-123', commentId: 'comment-123', owner: 'user-123' });
+      await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-1111111111' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-1111111', threadId, owner: 'user-1111111111' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId, owner: 'user-1111111111' });
+      await RepliesTableTestHelper.addReply({ id: 'reply-123', commentId: 'comment-456', owner: 'user-1111111111' });
+      await RepliesTableTestHelper.addReply({ id: 'reply-456', commentId: 'comment-1111111', owner: 'user-456' });
+      await LikesTableTestHelper.addCommentLike({ id: 'like-1111111111', commentId: 'comment-1111111', owner: 'user-1111111111' });
 
       // action
       const response = await server.inject({
@@ -171,9 +171,9 @@ describe('endpoints concerning CRUD on threads', () => {
     it('should respond with 200 and with thread details with empty comments', async () => {
       const server = await createServer(container);
 
-      const threadId = 'thread-123';
-      await UsersTableTestHelper.registerUser({ id: 'user-123', username: 'John Doe' });
-      await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-123' });
+      const threadId = 'thread-11111111';
+      await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: 'John Doe' });
+      await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-1111111111' });
 
       // action
       const response = await server.inject({

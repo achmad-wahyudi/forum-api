@@ -30,7 +30,7 @@ describe('ThreadRepositoryPostgres', () => {
 
         /* arranging for add pe-existing */
         await UsersTableTestHelper.registerUser({
-          id: 'user-123',
+          id: 'user-1111111111',
           username: 'dicoding',
           password: 'secret_password',
           fullname: 'Dicoding Indonesia',
@@ -43,7 +43,7 @@ describe('ThreadRepositoryPostgres', () => {
         const newThread = new NewThread({
           title: 'lorem ipsum',
           body: 'dolor sit amet',
-          owner: 'user-123',
+          owner: 'user-1111111111',
         });
 
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(
@@ -58,7 +58,7 @@ describe('ThreadRepositoryPostgres', () => {
         expect(addedThread).toStrictEqual(new AddedThread({
           id: `thread-${fakeThreadIdGenerator()}`,
           title: 'lorem ipsum',
-          owner: 'user-123',
+          owner: 'user-1111111111',
         }));
         expect(threads).toBeDefined();
       });
@@ -69,8 +69,8 @@ describe('ThreadRepositoryPostgres', () => {
       it('should return NotFoundError when thread is not found', async () => {
         // arrange
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-        await UsersTableTestHelper.registerUser({ id: 'user-123' });
-        await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+        await UsersTableTestHelper.registerUser({ id: 'user-1111111111' });
+        await ThreadsTableTestHelper.addThread({ id: 'thread-11111111', owner: 'user-1111111111' });
 
         // action & assert
         await expect(threadRepositoryPostgres.verifyThreadAvalaibility('thread-x'))
@@ -80,8 +80,8 @@ describe('ThreadRepositoryPostgres', () => {
       it('should return NotFoundError when thread is not found', async () => {
         // arrange
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-        await UsersTableTestHelper.registerUser({ id: 'user-123' });
-        await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+        await UsersTableTestHelper.registerUser({ id: 'user-1111111111' });
+        await ThreadsTableTestHelper.addThread({ id: 'thread-11111111', owner: 'user-1111111111' });
 
         // action & assert
         await expect(threadRepositoryPostgres.getThreadById('thread-x'))
@@ -92,21 +92,21 @@ describe('ThreadRepositoryPostgres', () => {
       it('should return thread when thread is found', async () => {
         // arrange
         const newThread = {
-          id: 'thread-123', title: 'lorem ipsum', body: 'dolor sit amet', owner: 'user-123', date: '2021',
+          id: 'thread-11111111', title: 'lorem ipsum', body: 'dolor sit amet', owner: 'user-1111111111', date: '2021',
         };
         const expectedThread = {
-          id: 'thread-123',
+          id: 'thread-11111111',
           title: 'lorem ipsum',
           date,
           username: 'John Doe',
           body: 'dolor sit amet',
         };
         const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
-        await UsersTableTestHelper.registerUser({ id: 'user-123', username: expectedThread.username });
+        await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: expectedThread.username });
         await ThreadsTableTestHelper.addThread(newThread);
 
         // action
-        const acquiredThread = await threadRepositoryPostgres.getThreadById('thread-123');
+        const acquiredThread = await threadRepositoryPostgres.getThreadById('thread-11111111');
 
         // assert
         expect(acquiredThread.id).toStrictEqual(expectedThread.id);

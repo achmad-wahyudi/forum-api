@@ -19,8 +19,8 @@ const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
 const CommentRepository = require('../Domains/comments/CommentRepository');
 const ReplyRepository = require('../Domains/replies/ReplyRepository');
 const ThreadRepository = require('../Domains/threads/ThreadRepository');
-const LikeRepository = require('../Domains/likes/LikeRepository');
-const LikeRepositoryPostgres = require('./repository/LikeRepositoryPostgres');
+const CommentLikeRepository = require('../Domains/comment-likes/CommentLikeRepository');
+const CommentLikeRepositoryPostgres = require('./repository/CommentLikeRepositoryPostgres');
 
 // use case
 const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
@@ -38,7 +38,7 @@ const AuthenticationRepository = require('../Domains/authentications/Authenticat
 const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
 const LogoutUserUseCase = require('../Applications/use_case/LogoutUserUseCase');
 const RefreshAuthenticationUseCase = require('../Applications/use_case/RefreshAuthenticationUseCase');
-const AddLikeUseCase = require('../Applications/use_case/AddLikeUseCase');
+const AddCommentLikeUseCase = require('../Applications/use_case/AddCommentLikeUseCase');
 
 // creating container
 const container = createContainer();
@@ -113,8 +113,8 @@ container.register([
     },
   },
   {
-    key: LikeRepository.name,
-    Class: LikeRepositoryPostgres,
+    key: CommentLikeRepository.name,
+    Class: CommentLikeRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -274,15 +274,15 @@ container.register([
           internal: ReplyRepository.name,
         },
         {
-          name: 'likeRepository',
-          internal: LikeRepository.name,
+          name: 'commentLikeRepository',
+          internal: CommentLikeRepository.name,
         },
       ],
     },
   },
   {
-    key: AddLikeUseCase.name,
-    Class: AddLikeUseCase,
+    key: AddCommentLikeUseCase.name,
+    Class: AddCommentLikeUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
@@ -291,8 +291,8 @@ container.register([
           internal: CommentRepository.name,
         },
         {
-          name: 'likeRepository',
-          internal: LikeRepository.name,
+          name: 'commentLikeRepository',
+          internal: CommentLikeRepository.name,
         },
       ],
     },

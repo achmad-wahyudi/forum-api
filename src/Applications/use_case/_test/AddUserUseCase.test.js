@@ -27,7 +27,7 @@ describe('RegisterUserUseCase', () => {
       .mockImplementation(() => ('encrypted_password'));
     mockUserRepository.registerUser = jest.fn()
       .mockImplementation(() => new RegisteredUser({
-        id: 'user-123',
+        id: 'user-1111111111',
         username: useCasePayload.username,
         fullname: useCasePayload.fullname,
       }));
@@ -43,7 +43,7 @@ describe('RegisterUserUseCase', () => {
 
     // Assert
     expect(registeredUser).toStrictEqual(new RegisteredUser({
-      id: 'user-123',
+      id: 'user-1111111111',
       username: useCasePayload.username,
       fullname: useCasePayload.fullname,
     }));

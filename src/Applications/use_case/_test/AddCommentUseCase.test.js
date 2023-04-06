@@ -12,13 +12,13 @@ describe('AddCommentUseCase', () => {
     };
 
     const useCaseParam = {
-      threadId: 'thread-123',
+      threadId: 'thread-11111111',
     };
 
-    const userIdFromAccessToken = 'user-123';
+    const userIdFromAccessToken = 'user-1111111111';
 
     const expectedAddedComment = new AddedComment({
-      id: 'comment-123',
+      id: 'comment-1111111',
       content: useCasePayload.content,
       owner: userIdFromAccessToken,
     });
@@ -30,7 +30,7 @@ describe('AddCommentUseCase', () => {
     /** mocking needed functions */
     mockThreadRepository.verifyThreadAvalaibility = jest.fn()
       .mockImplementation(() => ({
-        id: 'comment-123',
+        id: 'comment-1111111',
         title: 'title-123',
         body: 'body-123',
         date: '2020',
@@ -38,9 +38,9 @@ describe('AddCommentUseCase', () => {
       }));
     mockCommentRepository.addComment = jest.fn()
       .mockImplementation(() => new AddedComment({
-        id: 'comment-123',
+        id: 'comment-1111111',
         content: 'comment content',
-        owner: 'user-123',
+        owner: 'user-1111111111',
       }));
 
     /** creating use case instance */

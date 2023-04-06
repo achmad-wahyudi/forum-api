@@ -27,7 +27,7 @@ describe('a AddedReply entity', () => {
     const payload = {
       id: 'reply-123',
       content: 'some reply',
-      owner: 'user-123',
+      owner: 'user-1111111111',
     };
 
     const addedReply = new AddedReply(payload);

@@ -34,8 +34,8 @@ describe('endpoints concerning CRUD on replies', () => {
       /* create first user and add thread and comment */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
 
@@ -67,8 +67,8 @@ describe('endpoints concerning CRUD on replies', () => {
       /* create first user and add thread and comment */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
 
@@ -98,8 +98,8 @@ describe('endpoints concerning CRUD on replies', () => {
       /* create first user and add thread and comment */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
 
@@ -126,8 +126,8 @@ describe('endpoints concerning CRUD on replies', () => {
 
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       const replyId = 'reply-123';
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });
@@ -153,8 +153,8 @@ describe('endpoints concerning CRUD on replies', () => {
       /* add first user and thread, comment and reply */
       const { userId: firstUserId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server, username: 'JohnDoe' });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       const replyId = 'reply-123';
       await ThreadableTestHelper.addThread({ id: threadId, owner: firstUserId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: firstUserId });
@@ -185,8 +185,8 @@ describe('endpoints concerning CRUD on replies', () => {
       /* add first user and thread, comment and reply */
       const { accessToken, userId } = await ServerTestHelper
         .getAccessTokenAndUserIdHelper({ server, username: 'JohnDoe' });
-      const threadId = 'thread-123';
-      const commentId = 'comment-123';
+      const threadId = 'thread-11111111';
+      const commentId = 'comment-1111111';
       const replyId = 'reply-123';
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, owner: userId });

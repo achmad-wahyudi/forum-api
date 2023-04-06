@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
-const LikesTableTestHelper = {
-  async addLike({
-    id = 'like-123', commentId = 'comment-123', owner = 'user-123',
+const CommentLikesTableTestHelper = {
+  async addCommentLike({
+    id = 'like-1111111111', commentId = 'comment-1111111', owner = 'user-1111111111',
   }) {
     const query = {
       text: 'INSERT INTO likes (id, comment_id, owner) VALUES ($1, $2, $3)',
@@ -13,7 +13,7 @@ const LikesTableTestHelper = {
     await pool.query(query);
   },
 
-  async getLikeByCommentIdAndOwner({ commentId = 'comment-123', owner = 'user-123' }) {
+  async getLikeByCommentIdAndOwner({ commentId = 'comment-1111111', owner = 'user-1111111111' }) {
     const query = {
       text: 'SELECT * FROM likes WHERE comment_id = $1 AND owner = $2',
       values: [commentId, owner],
@@ -29,4 +29,4 @@ const LikesTableTestHelper = {
 
 };
 
-module.exports = LikesTableTestHelper;
+module.exports = CommentLikesTableTestHelper;

@@ -15,9 +15,11 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('behavior test', () => {
+    const fakeIdGenerator = () => '1111111';
+
     beforeAll(async () => {
-      const userId = 'user-123';
-      const threadId = 'thread-123';
+      const userId = 'user-1111111111';
+      const threadId = 'thread-11111111';
       await UsersTableTestHelper.registerUser({ id: userId, username: 'SomeUser' });
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
     });
@@ -37,10 +39,9 @@ describe('CommentRepositoryPostgres', () => {
         // arrange
         const newComment = new NewComment({
           content: 'some content',
-          threadId: 'thread-123',
-          owner: 'user-123',
+          threadId: 'thread-11111111',
+          owner: 'user-1111111111',
         });
-        const fakeIdGenerator = () => '123';
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool, fakeIdGenerator,
         );
@@ -51,7 +52,7 @@ describe('CommentRepositoryPostgres', () => {
 
         // assert
         expect(addedComment).toStrictEqual({
-          id: 'comment-123',
+          id: 'comment-1111111',
           content: newComment.content,
           owner: newComment.owner,
         });
@@ -63,8 +64,8 @@ describe('CommentRepositoryPostgres', () => {
       it('should be able to delete added comment by id', async () => {
       // arrange
         const addedComment = {
-          id: 'comment-123',
-          threadId: 'thread-123',
+          id: 'comment-1111111',
+          threadId: 'thread-11111111',
         };
 
         await CommentsTableTestHelper.addComment({
@@ -75,7 +76,7 @@ describe('CommentRepositoryPostgres', () => {
 
         // action
         await commentRepositoryPostgres.deleteCommentById(addedComment.id);
-        const comment = await CommentsTableTestHelper.findCommentById('comment-123');
+        const comment = await CommentsTableTestHelper.findCommentById('comment-1111111');
 
         // assert
         expect(comment.is_deleted).toEqual(true);
@@ -83,7 +84,7 @@ describe('CommentRepositoryPostgres', () => {
 
       it('should throw error when comment that wants to be deleted does not exist', async () => {
       // arrange
-        const addedCommentId = 'comment-123';
+        const addedCommentId = 'comment-1111111';
 
         const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
@@ -96,7 +97,7 @@ describe('CommentRepositoryPostgres', () => {
       it('should return all comments from a thread', async () => {
         const date = (new Date()).toISOString();
         const firstComment = new DetailComment({
-          id: 'comment-123', username: 'SomeUser', date, content: 'first comment', is_deleted: false, replies: [], likeCount: 0,
+          id: 'comment-1111111', username: 'SomeUser', date, content: 'first comment', is_deleted: false, replies: [], likeCount: 0,
         });
         const secondComment = new DetailComment({
           id: 'comment-456', username: 'dicoding', date, content: 'second comment', is_deleted: false, replies: [], likeCount: 0,
@@ -107,7 +108,7 @@ describe('CommentRepositoryPostgres', () => {
           pool, {},
         );
 
-        const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
+        const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-11111111');
 
         expect(commentDetails[0].id).toStrictEqual(firstComment.id);
         expect(commentDetails[0].username).toStrictEqual(firstComment.username);
@@ -123,7 +124,7 @@ describe('CommentRepositoryPostgres', () => {
           pool, {},
         );
 
-        const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-123');
+        const commentDetails = await commentRepositoryPostgres.getCommentsByThreadId('thread-11111111');
         expect(commentDetails).toStrictEqual([]);
       });
     });
@@ -131,14 +132,14 @@ describe('CommentRepositoryPostgres', () => {
     describe('checkCommentIsExist', () => {
       it('should resolve if comment exists', async () => {
         await CommentsTableTestHelper.addComment({
-          id: 'comment-123',
+          id: 'comment-1111111',
         });
 
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool, {},
         );
 
-        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-123' }))
+        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-1111111' }))
           .resolves.not.toThrowError();
       });
 
@@ -147,13 +148,13 @@ describe('CommentRepositoryPostgres', () => {
           pool, {},
         );
 
-        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-456' }))
+        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-456' }))
           .rejects.toThrowError('comment yang Anda cari tidak ada');
       });
 
       it('should reject if comment is already deleted', async () => {
         await CommentsTableTestHelper.addComment({
-          id: 'comment-123',
+          id: 'comment-1111111',
           isDeleted: true,
         });
 
@@ -161,42 +162,42 @@ describe('CommentRepositoryPostgres', () => {
           pool, {},
         );
 
-        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-123', commentId: 'comment-456' }))
+        await expect(commentRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-456' }))
           .rejects.toThrowError('comment yang Anda cari tidak ada');
       });
     });
 
     describe('verifyCommentAccess', () => {
       it('should not throw error if user has authorization', async () => {
-        await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-1111111', threadId: 'thread-11111111', owner: 'user-1111111111' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool, {},
         );
         await expect(commentRepositoryPostgres.verifyCommentAccess({
-          commentId: 'comment-123', ownerId: 'user-123',
+          commentId: 'comment-1111111', ownerId: 'user-1111111111',
         })).resolves.not.toThrowError();
       });
 
       it('should throw error if user has no authorization', async () => {
         await ThreadsTableTestHelper.addThread({ id: 'thread-xyz' });
-        await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId: 'thread-123', owner: 'user-123' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-456', threadId: 'thread-11111111', owner: 'user-1111111111' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool, {},
         );
         await expect(commentRepositoryPostgres.verifyCommentAccess({
-          threadId: 'thread-123', owner: 'user-456',
+          threadId: 'thread-11111111', owner: 'user-456',
         })).rejects.toThrowError('proses gagal karena Anda tidak mempunyai akses ke aksi ini');
       });
     });
 
     describe('checkCommentBelongsToThread', () => {
       it('should not throw error if comment exists in thread', async () => {
-        await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+        await CommentsTableTestHelper.addComment({ id: 'comment-1111111', threadId: 'thread-11111111' });
         const commentRepositoryPostgres = new CommentRepositoryPostgres(
           pool, {},
         );
         await expect(commentRepositoryPostgres.checkCommentBelongsToThread({
-          threadId: 'thread-123', commentId: 'comment-123',
+          threadId: 'thread-11111111', commentId: 'comment-1111111',
         })).resolves;
       });
 
@@ -207,7 +208,7 @@ describe('CommentRepositoryPostgres', () => {
           pool, {},
         );
         await expect(commentRepositoryPostgres.checkCommentBelongsToThread({
-          threadId: 'thread-123', commentId: 'comment-456',
+          threadId: 'thread-11111111', commentId: 'comment-456',
         })).rejects.toThrowError('comment yang anda cari tidak ada di thread ini');
       });
     });
