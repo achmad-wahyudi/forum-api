@@ -14,6 +14,7 @@ class ThreadsHandler {
     const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
 
     const addedThread = await addThreadUseCase.execute(request.payload, owner);
+
     const response = h.response({
       status: 'success',
       data: {
@@ -28,6 +29,7 @@ class ThreadsHandler {
     const getThreadUseCase = this._container.getInstance(GetThreadUseCase.name);
 
     const detailThread = await getThreadUseCase.execute(request.params);
+
     const response = h.response({
       status: 'success',
       data: {

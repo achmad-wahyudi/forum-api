@@ -1,50 +1,42 @@
 const DetailThread = require('../DetailThread');
 
 describe('an AddedThread entity', () => {
-  it('should throw error if payload does not meet criteria', () => {
-    // arrange
-
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
       id: 'thread-1234',
-      title: 'lorem ipsum',
-      body: 'dolor sit amet',
-      date: '2021',
+      title: 'thread title',
+      body: 'thread body',
+      date: '2023',
     };
 
-    // action and assert
     expect(() => new DetailThread(payload)).toThrowError('DETAIL_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload has invalid data type', () => {
-    // arrange
     const payload = {
-      id: 345,
-      title: 1984,
+      id: 111,
+      title: 666,
       body: {},
-      date: 1980,
+      date: 2023,
       username: {},
       comments: 'comments',
     };
 
-    // action and assert
     expect(() => new DetailThread(payload)).toThrowError('DETAIL_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create DetailThread object correctly', () => {
-    // Arrange
     const payload = {
       id: 'thread-1234',
-      title: 'Lorem ipsum',
-      body: 'dolor sit amet',
-      date: '2021',
-      username: 'John Doe',
+      title: 'thread title',
+      body: 'thread body',
+      date: '2023',
+      username: 'username',
       comments: [],
     };
 
-    // Action
     const detailThread = new DetailThread(payload);
 
-    // Assert
     expect(detailThread.id).toEqual(payload.id);
     expect(detailThread.title).toEqual(payload.title);
     expect(detailThread.body).toEqual(payload.body);

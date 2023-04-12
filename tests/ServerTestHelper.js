@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 const ServerTestHelper = {
 
-  async getAccessTokenAndUserIdHelper({ server, username = 'JohnDoe' }) {
+  async getAccessTokenAndUserId({ server, username = 'JohnDoe' }) {
     const userPayload = {
-      username, password: 'secret',
+      username, password: 'secretpassword',
     };
 
     const responseUser = await server.inject({

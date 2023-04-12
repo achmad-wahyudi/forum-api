@@ -1,50 +1,49 @@
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
-const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const DetailComment = require('../../../Domains/comments/entities/DetailComment');
-const DetailReply = require('../../../Domains/replies/entities/DetailReply');
+const CommentThreadRepository = require('../../../Domains/comments-thread/CommentThreadRepository');
+const DetailCommentThread = require('../../../Domains/comments-thread/entities/DetailCommentThread');
+const DetailReplyComment = require('../../../Domains/replies-comment/entities/DetailReplyComment');
 const GetThreadUseCase = require('../GetThreadUseCase');
-const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
-const CommentLikeRepository = require('../../../Domains/comment-likes/CommentLikeRepository');
+const ReplyCommentRepository = require('../../../Domains/replies-comment/ReplyCommentRepository');
+const LikeCommentRepository = require('../../../Domains/likes-comment/LikeCommentRepository');
 
 describe('GetThreadDetailUseCase', () => {
   it('should orchestrate the get thread detail action correctly', async () => {
-    // arrange
     const useCaseParam = {
       threadId: 'thread-11111111',
     };
 
     const expectedDetailThread = {
-      body: 'some thread body',
-      date: '2020',
+      body: 'thread body',
+      date: '2023-01-01',
       id: 'thread-11111111',
-      title: 'some thread title',
+      title: 'thread title',
       username: 'John Doe',
       comments: [
-        new DetailComment({
+        new DetailCommentThread({
           content: 'comment A',
-          date: '2021',
+          date: '2023-01-01',
           id: 'comment-1111111',
           username: 'user A',
           likeCount: 2,
           replies: [
             {
               content: 'reply A',
-              date: '2021',
-              id: 'reply-123',
+              date: '2023-01-01',
+              id: 'reply-111111111',
               username: 'user C',
             },
           ],
         }),
-        new DetailComment({
+        new DetailCommentThread({
           content: 'comment B',
-          date: '2020',
+          date: '2023-01-01',
           id: 'comment-456',
           username: 'user B',
           likeCount: 0,
           replies: [
             {
               content: 'reply B',
-              date: '2021',
+              date: '2023-01-01',
               id: 'reply-456',
               username: 'user D',
             },
@@ -54,165 +53,71 @@ describe('GetThreadDetailUseCase', () => {
     };
 
     const mockThreadRepository = new ThreadRepository();
-    const mockReplyRepository = new ReplyRepository();
-    const mockCommentRepository = new CommentRepository();
-    const mockCommentLikeRepository = new CommentLikeRepository();
+    const mockReplyCommentRepository = new ReplyCommentRepository();
+    const mockCommentThreadRepository = new CommentThreadRepository();
+    const mockLikeCommentRepository = new LikeCommentRepository();
 
     mockThreadRepository.getThreadById = jest.fn()
       .mockImplementation(() => ({
         id: 'thread-11111111',
-        title: 'some thread title',
-        body: 'some thread body',
-        date: '2020',
+        title: 'thread title',
+        body: 'thread body',
+        date: '2023-01-01',
         username: 'John Doe',
       }));
-    mockReplyRepository.getRepliesByThreadId = jest.fn()
+    mockReplyCommentRepository.getRepliesByThreadId = jest.fn()
       .mockImplementation(() => [
-        new DetailReply({
-          id: 'reply-123',
+        new DetailReplyComment({
+          id: 'reply-111111111',
           commentId: 'comment-1111111',
           content: 'reply A',
-          date: '2021',
+          date: '2023-01-01',
           username: 'user C',
         }),
-        new DetailReply({
+        new DetailReplyComment({
           id: 'reply-456',
           commentId: 'comment-456',
           content: 'reply B',
-          date: '2021',
+          date: '2023-01-01',
           username: 'user D',
         }),
       ]);
 
-    mockCommentRepository.getCommentsByThreadId = jest.fn()
+    mockCommentThreadRepository.getCommentsByThreadId = jest.fn()
       .mockImplementation(() => [
-        new DetailComment({
+        new DetailCommentThread({
           id: 'comment-1111111',
           username: 'user A',
-          date: '2021',
+          date: '2023-01-01',
           content: 'comment A',
           replies: [],
           likeCount: 0,
         }),
-        new DetailComment({
+        new DetailCommentThread({
           id: 'comment-456',
           username: 'user B',
-          date: '2020',
+          date: '2023-01-01',
           content: 'comment B',
           replies: [],
           likeCount: 0,
         }),
       ]);
 
-    mockCommentLikeRepository.getLikeCountByCommentId = jest.fn()
+    mockLikeCommentRepository.getLikeCountByCommentId = jest.fn()
       .mockImplementation((commentId) => Promise.resolve(commentId === 'comment-1111111' ? 2 : 0));
 
     const getThreadDetailUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
-      commentRepository: mockCommentRepository,
-      replyRepository: mockReplyRepository,
-      commentLikeRepository: mockCommentLikeRepository,
+      commentThreadRepository: mockCommentThreadRepository,
+      replyCommentRepository: mockReplyCommentRepository,
+      likeCommentRepository: mockLikeCommentRepository,
     });
 
-    // action
     const useCaseResult = await getThreadDetailUseCase.execute(useCaseParam);
 
-    // assert
     expect(useCaseResult).toEqual(expectedDetailThread);
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCaseParam.threadId);
-    expect(mockCommentRepository.getCommentsByThreadId).toBeCalledWith(useCaseParam.threadId);
-    expect(mockReplyRepository.getRepliesByThreadId).toBeCalledWith(useCaseParam.threadId);
-  });
-
-  it('should operate the branching in the _getRepliesForComments function properly', () => {
-    // arrange
-    const getThreadDetailUseCase = new GetThreadUseCase(
-      {}, {}, {}, {},
-    );
-    const filteredComment = {
-      id: 'comment-1111111',
-      username: 'user A',
-      date: '2021',
-      content: '**komentar telah dihapus**',
-      replies: [],
-      likeCount: 0,
-    };
-
-    const retrievedReplies = [
-      new DetailReply({
-        id: 'reply-123',
-        commentId: 'comment-1111111',
-        content: 'reply A',
-        date: '2021',
-        username: 'user C',
-        isDeleted: true,
-      }),
-      new DetailReply({
-        id: 'reply-456',
-        commentId: 'comment-456',
-        content: 'reply B',
-        date: '2021',
-        username: 'user D',
-        isDeleted: false,
-      }),
-    ];
-
-    const expectedCommentsAndReplies = [{
-      content: 'reply A',
-      date: '2021',
-      id: 'reply-123',
-      username: 'user C',
-    }];
-
-    const SpyGetRepliesForComments = jest.spyOn(getThreadDetailUseCase, '_getRepliesForComments');
-
-    // action
-    getThreadDetailUseCase
-      ._getRepliesForComments(filteredComment, retrievedReplies);
-
-    // assert
-    expect(SpyGetRepliesForComments)
-      .toReturnWith(expectedCommentsAndReplies);
-
-    SpyGetRepliesForComments.mockClear();
-  });
-
-  it('should operate the _getLikeCountForComments function properly', async () => {
-    const commentParam = {
-      id: 'comment-1111111',
-      username: 'user B',
-      date: '2020',
-      content: 'comment B',
-      replies: [{
-        id: 'reply-456',
-        content: 'reply B',
-        date: '2021',
-        username: 'user D',
-      }],
-      likeCount: 0,
-    };
-
-    const mockCommentLikeRepository = new CommentLikeRepository();
-    mockCommentLikeRepository.getLikeCountByCommentId = jest.fn()
-      .mockImplementation((commentId) => Promise.resolve(commentId === 'comment-1111111' ? 2 : 0));
-
-    const getThreadDetailUseCase = new GetThreadUseCase(
-      {
-        threadRepository: {},
-        commentRepository: {},
-        commentLikeRepository: mockCommentLikeRepository,
-      },
-    );
-
-    const SpyGetLikeCountForComments = jest.spyOn(getThreadDetailUseCase, '_getLikeCountForComments');
-
-    const result = await getThreadDetailUseCase
-      ._getLikeCountForComments(commentParam);
-
-    expect(result)
-      .toEqual(2);
-    expect(mockCommentLikeRepository.getLikeCountByCommentId).toBeCalledTimes(1);
-
-    SpyGetLikeCountForComments.mockClear();
+    expect(mockCommentThreadRepository.getCommentsByThreadId).toBeCalledWith(useCaseParam.threadId);
+    expect(mockReplyCommentRepository.getRepliesByThreadId).toBeCalledWith(useCaseParam.threadId);
   });
 });
