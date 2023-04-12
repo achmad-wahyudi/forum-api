@@ -111,7 +111,6 @@ describe('LikeCommentRepositoryPostgres', () => {
 
     it('deleteLikeByCommentIdAndOwner should throw error when deleting non-existing like', async () => {
       const likeCommentRepositoryPostgres = new LikeCommentRepositoryPostgres(pool, {});
-
       await expect(likeCommentRepositoryPostgres.deleteLikeByCommentIdAndOwner({
         commentId: 'comment-1111111',
         owner: 'user-1111111111',
@@ -133,7 +132,6 @@ describe('LikeCommentRepositoryPostgres', () => {
 
     it('getLikeCountByCommentId function should get right likeCount #Like2', async () => {
       const likeCommentRepositoryPostgres = new LikeCommentRepositoryPostgres(pool, {});
-
       const likeCount = await likeCommentRepositoryPostgres.getLikeCountByCommentId(strCommentId2);
 
       expect(likeCount).toEqual(0);

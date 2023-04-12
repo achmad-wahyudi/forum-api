@@ -71,7 +71,7 @@ describe('endpoints concerning CRUD on threads', () => {
       expect(responseJson.message).toEqual('Missing authentication');
     });
 
-    it('should response with 400 when payload does not meet structure specifications', async () => {
+    it('should response 400 when request payload not contain needed property', async () => {
       const requestPayload = {
         title: 'thread title',
       };
@@ -94,7 +94,7 @@ describe('endpoints concerning CRUD on threads', () => {
       expect(responseJson.message).toEqual('tidak dapat menambahkan thread baru karena properti yang dibutuhkan tidak ada');
     });
 
-    it('should response with 400 when payload does not meet data type specifications', async () => {
+    it('should response 400 when request payload not meet data type specification', async () => {
       const requestPayload = {
         title: {},
         body: 222,
@@ -120,7 +120,7 @@ describe('endpoints concerning CRUD on threads', () => {
   });
 
   describe('when GET /threads/{threadId}', () => {
-    it('should respond with 200 with thread details and comments', async () => {
+    it('should response with 200 with thread details and comments', async () => {
       const server = await createServer(container);
 
       const threadId = 'thread-11111111';
@@ -151,7 +151,7 @@ describe('endpoints concerning CRUD on threads', () => {
       expect(responseJson.data.thread.comments[1].likeCount).toEqual(0);
     });
 
-    it('should respond with 200 and with thread details with empty comments', async () => {
+    it('should response with 200 and with detail thread with empty comments', async () => {
       const server = await createServer(container);
 
       const threadId = 'thread-11111111';
@@ -172,7 +172,7 @@ describe('endpoints concerning CRUD on threads', () => {
       expect(responseJson.data.thread.comments).toHaveLength(0);
     });
 
-    it('should respond with 404 if thread does not exist', async () => {
+    it('should response with 404 if thread does not exist', async () => {
       const server = await createServer(container);
 
       const response = await server.inject({

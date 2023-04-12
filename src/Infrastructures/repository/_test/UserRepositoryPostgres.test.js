@@ -35,7 +35,7 @@ describe('UserRepositoryPostgres', () => {
     });
   });
 
-  describe('addUser function', () => {
+  describe('RegisterUser function', () => {
     it('should persist register user and return registered user correctly', async () => {
       // Arrange
       const registerUser = new RegisterUser({
@@ -126,7 +126,6 @@ describe('UserRepositoryPostgres', () => {
 
   describe('getUsernameById', () => {
     it('should throw InvariantError when user not found', async () => {
-      // arrange
       // Arrange
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
 

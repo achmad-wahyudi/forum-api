@@ -9,7 +9,7 @@ const ThreadableTestHelper = require('../../../../tests/ThreadsTableTestHelper')
 const CommentsThreadTableTestHelper = require('../../../../tests/CommentsThreadTableTestHelper');
 const LikesCommentTableTestHelper = require('../../../../tests/LikesCommentTableTestHelper');
 
-describe('endpoints concerning CRUD on comments', () => {
+describe('endpoints concerning CRUD on likes comment', () => {
   afterEach(async () => {
     await AuthenticationsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
@@ -23,7 +23,7 @@ describe('endpoints concerning CRUD on comments', () => {
   });
 
   describe('when PUT /threads/{threadId}/comments/{commentId}/likes', () => {
-    it('should response 200 when giving like ', async () => {
+    it('should response 200 when giving like comment ', async () => {
       const server = await createServer(container);
       const { accessToken, userId } = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
@@ -32,6 +32,7 @@ describe('endpoints concerning CRUD on comments', () => {
 
       await ThreadableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsThreadTableTestHelper.addCommentThread({ id: commentId, owner: userId });
+      await LikesCommentTableTestHelper.addLikeComment({ commentId, owner: userId });
 
       const response = await server.inject({
         method: 'PUT',
@@ -46,7 +47,7 @@ describe('endpoints concerning CRUD on comments', () => {
       expect(responseJson.status).toEqual('success');
     });
 
-    it('should response 200 when giving unlike ', async () => {
+    it('should response 200 when giving unlike comment', async () => {
       const server = await createServer(container);
       const { accessToken, userId } = await ServerTestHelper.getAccessTokenAndUserId({ server });
 

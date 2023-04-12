@@ -8,7 +8,7 @@ const ServerTestHelper = require('../../../../tests/ServerTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
 
-describe('endpoints concerning CRUD on replies', () => {
+describe('endpoints concerning CRUD on replies comment', () => {
   afterEach(async () => {
     await UsersTableTestHelper.cleanTable();
     await ThreadableTestHelper.cleanTable();
@@ -22,7 +22,7 @@ describe('endpoints concerning CRUD on replies', () => {
   });
 
   describe('on POST /threads/{threadId}/comments/{commentId}/replies', () => {
-    it('should return with 201 and return success status with payload', async () => {
+    it('should response 201 and persisted replies comment', async () => {
       const requestPayload = {
         content: 'content reply',
       };
@@ -55,7 +55,7 @@ describe('endpoints concerning CRUD on replies', () => {
       expect(responseJson.data.addedReply.owner).toBeDefined();
     });
 
-    it('should return with 400 when payload has missing requirements', async () => {
+    it('should response 400 when request payload not contain needed property', async () => {
       const requestPayload = {};
 
       const server = await createServer(container);
@@ -79,10 +79,10 @@ describe('endpoints concerning CRUD on replies', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toBeDefined();
+      expect(responseJson.message).toEqual('tidak dapat menambahkan reply baru karena properti yang dibutuhkan tidak ada');
     });
 
-    it('should return with 400 when payload wrong data type', async () => {
+    it('should response 400 when request payload not meet data type specification', async () => {
       const requestPayload = {
         content: 2023,
       };
@@ -108,12 +108,12 @@ describe('endpoints concerning CRUD on replies', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toBeDefined();
+      expect(responseJson.message).toEqual('tidak dapat menambahkan reply baru karena tipe data tidak sesuai');
     });
   });
 
   describe('on DELETE /threads/{threadId}/comments/{commentId}/replies/{replyId}', () => {
-    it('should return with 200 and return success status', async () => {
+    it('should response with 200 and return success status', async () => {
       const server = await createServer(container);
       const { accessToken, userId } = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
@@ -138,7 +138,7 @@ describe('endpoints concerning CRUD on replies', () => {
       expect(responseJson.status).toEqual('success');
     });
 
-    it('should return with 403 if user does not have access to reply', async () => {
+    it('should response with 403 if user does not have access to reply comment', async () => {
       const server = await createServer(container);
       const { userId } = await ServerTestHelper.getAccessTokenAndUserId({ server, username: 'username' });
 
@@ -167,7 +167,7 @@ describe('endpoints concerning CRUD on replies', () => {
       expect(responseJson.message).toBeDefined();
     });
 
-    it('should return with 404 if reply is already deleted', async () => {
+    it('should response with 404 if reply is already deleted', async () => {
       const server = await createServer(container);
       const { accessToken, userId } = await ServerTestHelper.getAccessTokenAndUserId({ server, username: 'JohnDoe' });
 
