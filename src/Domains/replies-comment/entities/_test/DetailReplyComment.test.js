@@ -1,38 +1,35 @@
 const DetailReplyComment = require('../DetailReplyComment');
 
 describe('a DetailReplyComment entity', () => {
-  it('should throw error if payload does not meet criteria', () => {
-    // arrange
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
       id: 'reply-111111111',
-      content: 'some reply',
-      date: '2021',
+      content: 'content reply',
+      date: '2023',
     };
 
-    // action & assert
-    expect(() => new DetailReplyComment(payload)).toThrowError('DETAIL_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new DetailReplyComment(payload)).toThrowError('DETAIL_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload has invalid data type', () => {
     const payload = {
       id: 123,
-      commentId: 999,
-      content: 145,
+      commentId: 222,
+      content: 1111,
       date: {},
       username: {},
     };
 
-    // action & assert
-    expect(() => new DetailReplyComment(payload)).toThrowError('DETAIL_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new DetailReplyComment(payload)).toThrowError('DETAIL_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create DetailReplyComment object properly', () => {
     const payload = {
       id: 'reply-111111111',
       commentId: 'comment-1111111',
-      content: 'some reply',
-      date: '2021',
-      username: 'John Doe',
+      content: 'content reply',
+      date: '2023',
+      username: 'username1',
     };
 
     const detailReplyComment = new DetailReplyComment(payload);

@@ -7,60 +7,54 @@ const AddReplyCommentUseCase = require('../AddReplyCommentUseCase');
 
 describe('AddReplyCommentUseCase', () => {
   it('should orchestrate the add reply use case properly', async () => {
-    // arrange
     const useCasePayload = {
       content: 'reply content',
     };
 
-    const useCaseParam = {
+    const paramReplyComment = {
       threadId: 'thread-11111111',
       commentId: 'comment-1111111',
     };
 
-    const userIdFromAccessToken = 'user-1111111111';
+    const owner = 'user-1111111111';
 
     const expectedAddedReplyComment = new AddedReplyComment({
       id: 'comment-1111111',
       content: useCasePayload.content,
-      owner: userIdFromAccessToken,
+      owner,
     });
 
-    /** creating dependancies for use case */
     const mockThreadRepository = new ThreadRepository();
     const mockCommentThreadRepository = new CommentThreadRepository();
     const mockReplyCommentRepository = new ReplyCommentRepository();
 
-    /** mocking needed functions */
-    mockCommentThreadRepository.checkCommentBelongsToThread = jest.fn(() => Promise.resolve());
+    mockCommentThreadRepository.checkCommentInThread = jest.fn(() => Promise.resolve());
     mockReplyCommentRepository.addReplyComment = jest.fn(() => new AddedReplyComment({
       id: 'comment-1111111',
       content: 'reply content',
       owner: 'user-1111111111',
     }));
 
-    /** creating use case instance */
     const addReplyCommentUseCase = new AddReplyCommentUseCase({
       threadRepository: mockThreadRepository,
       commentThreadRepository: mockCommentThreadRepository,
       replyCommentRepository: mockReplyCommentRepository,
     });
 
-    // action
     const addedReplyComment = await addReplyCommentUseCase.execute(
-      useCasePayload, useCaseParam, userIdFromAccessToken,
+      useCasePayload, paramReplyComment, owner,
     );
 
-    // assert
     expect(addedReplyComment).toStrictEqual(expectedAddedReplyComment);
 
-    expect(mockCommentThreadRepository.checkCommentBelongsToThread).toBeCalledWith({
-      threadId: useCaseParam.threadId,
-      commentId: useCaseParam.commentId,
+    expect(mockCommentThreadRepository.checkCommentInThread).toBeCalledWith({
+      threadId: paramReplyComment.threadId,
+      commentId: paramReplyComment.commentId,
     });
     expect(mockReplyCommentRepository.addReplyComment).toBeCalledWith(new NewReplyComment({
-      threadId: useCaseParam.threadId,
-      commentId: useCaseParam.commentId,
-      owner: userIdFromAccessToken,
+      threadId: paramReplyComment.threadId,
+      commentId: paramReplyComment.commentId,
+      owner,
       content: useCasePayload.content,
     }));
   });

@@ -1,36 +1,33 @@
 const NewCommentThread = require('../NewCommentThread');
 
 describe('a NewCommentThread entity', () => {
-  it('should throw error if payload does not meet criteria', () => {
-    // arrange
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
-      content: 'some comment',
+      content: 'content comment',
       threadId: 'thread-11111111,',
       userId: 'user-1111111111',
     };
 
-    // action & assert
-    expect(() => new NewCommentThread(payload)).toThrowError('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new NewCommentThread(payload)).toThrowError('NEW_COMMENT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload has invalid data type', () => {
     const payload = {
       content: {},
-      threadId: 123,
-      owner: 456,
+      threadId: 1234,
+      owner: 1111,
       username: {},
     };
 
-    // action & assert
-    expect(() => new NewCommentThread(payload)).toThrowError('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new NewCommentThread(payload)).toThrowError('NEW_COMMENT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create NewCommentThread object properly', () => {
     const payload = {
-      content: 'some kind of body',
+      content: 'content comment',
       threadId: 'thread-11111111',
       owner: 'user-1111111111',
-      username: 'John Doe',
+      username: 'username',
     };
 
     const newCommentThread = new NewCommentThread(payload);

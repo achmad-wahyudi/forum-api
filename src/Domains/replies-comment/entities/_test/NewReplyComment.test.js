@@ -1,32 +1,29 @@
 const NewReplyComment = require('../NewReplyComment');
 
 describe('a NewReplyComment entity', () => {
-  it('should throw error if payload does not meeet criteria', () => {
-    // arrange
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
       commentId: 'comment-1111111',
       owner: 'user-1111111111',
     };
 
-    // action & assert
-    expect(() => new NewReplyComment(payload)).toThrowError('NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new NewReplyComment(payload)).toThrowError('NEW_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload has invalid data type', () => {
     const payload = {
-      commentId: 234,
+      commentId: 222,
       content: {},
-      owner: 123,
+      owner: 1,
     };
 
-    // action & assert
-    expect(() => new NewReplyComment(payload)).toThrowError('NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new NewReplyComment(payload)).toThrowError('NEW_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create NewReplyComment object properly', () => {
     const payload = {
       commentId: 'comment-1111111',
-      content: 'some reply',
+      content: 'content reply',
       owner: 'user-1111111111',
     };
 

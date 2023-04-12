@@ -3,40 +3,37 @@ const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 
 describe('DeleteCommentThreadUseCase', () => {
   it('should orchestrate the delete comment use case properly', async () => {
-    // arrange
-    const userIdFromAccessToken = 'user-1111111111';
     const useCaseParam = {
       threadId: 'thread-11111111',
       commentId: 'comment-1111111',
     };
 
+    const owner = 'user-1111111111';
+
     const expectedDeletedComment = {
       id: 'comment-1111111',
     };
 
-    /** creating dependancies for use case */
     const mockCommentThreadRepository = new CommentThreadRepository();
 
-    mockCommentThreadRepository.checkCommentIsExist = jest.fn()
+    mockCommentThreadRepository.verifyCommentAvalaibility = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentThreadRepository.verifyCommentAccess = jest.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentThreadRepository.deleteCommentById = jest.fn()
       .mockImplementation(() => Promise.resolve());
 
-    /** creating use case instance */
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({
       commentThreadRepository: mockCommentThreadRepository,
     });
 
-    // action
-    await deleteCommentThreadUseCase.execute(useCaseParam, userIdFromAccessToken);
+    await deleteCommentThreadUseCase.execute(useCaseParam, owner);
 
-    expect(mockCommentThreadRepository.checkCommentIsExist).toBeCalledWith({
+    expect(mockCommentThreadRepository.verifyCommentAvalaibility).toBeCalledWith({
       threadId: useCaseParam.threadId, commentId: useCaseParam.commentId,
     });
     expect(mockCommentThreadRepository.verifyCommentAccess).toBeCalledWith({
-      commentId: useCaseParam.commentId, ownerId: userIdFromAccessToken,
+      commentId: useCaseParam.commentId, ownerId: owner,
     });
     expect(mockCommentThreadRepository.deleteCommentById).toBeCalledWith(expectedDeletedComment.id);
   });

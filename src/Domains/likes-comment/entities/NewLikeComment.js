@@ -12,10 +12,10 @@ class NewLikeComment {
 
   _verifyPayload({ commentId, owner }) {
     if (!commentId || !owner) {
-      throw new Error('NEW_COMMENT_LIKE.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('NEW_LIKE_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
     if (typeof commentId !== 'string' || typeof owner !== 'string') {
-      throw new Error('NEW_COMMENT_LIKE.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('NEW_LIKE_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }

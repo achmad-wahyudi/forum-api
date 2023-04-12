@@ -1,4 +1,4 @@
-class DetailReply {
+class DetailReplyComment {
   constructor(payload) {
     this._verifyPayload(payload);
     const {
@@ -18,32 +18,22 @@ class DetailReply {
     if (isDeleted) this.content = '**balasan telah dihapus**';
   }
 
-  _verifyPayload(payload) {
-    if (this._isPayloadNotContainNeededProperty(payload)) {
-      throw new Error('DETAIL_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
-    }
-    if (this._isPayloadNotMeetDataTypeSpecification(payload)) {
-      throw new Error('DETAIL_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
-    }
-  }
-
-  _isPayloadNotContainNeededProperty({
+  _verifyPayload({
     id, commentId, content, date, username,
   }) {
-    return (!id || !commentId || !content || !date || !username);
-  }
-
-  _isPayloadNotMeetDataTypeSpecification({
-    id, commentId, content, date, username,
-  }) {
-    return (
+    if (!id || !commentId || !content || !date || !username) {
+      throw new Error('DETAIL_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    }
+    if (
       typeof id !== 'string'
             || typeof commentId !== 'string'
             || typeof content !== 'string'
             || typeof date !== 'string'
             || typeof username !== 'string'
-    );
+    ) {
+      throw new Error('DETAIL_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
   }
 }
 
-module.exports = DetailReply;
+module.exports = DetailReplyComment;

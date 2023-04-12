@@ -130,7 +130,7 @@ describe('CommentThreadRepositoryPostgres', () => {
       });
     });
 
-    describe('checkCommentIsExist', () => {
+    describe('verifyCommentAvalaibility', () => {
       it('should resolve if comment exists', async () => {
         await CommentsThreadTableTestHelper.addCommentThread({
           id: 'comment-1111111',
@@ -140,7 +140,7 @@ describe('CommentThreadRepositoryPostgres', () => {
           pool, {},
         );
 
-        await expect(commentThreadRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-1111111' }))
+        await expect(commentThreadRepositoryPostgres.verifyCommentAvalaibility({ threadId: 'thread-11111111', commentId: 'comment-1111111' }))
           .resolves.not.toThrowError();
       });
 
@@ -149,7 +149,7 @@ describe('CommentThreadRepositoryPostgres', () => {
           pool, {},
         );
 
-        await expect(commentThreadRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-456' }))
+        await expect(commentThreadRepositoryPostgres.verifyCommentAvalaibility({ threadId: 'thread-11111111', commentId: 'comment-456' }))
           .rejects.toThrowError('comment yang Anda cari tidak ada');
       });
 
@@ -163,7 +163,7 @@ describe('CommentThreadRepositoryPostgres', () => {
           pool, {},
         );
 
-        await expect(commentThreadRepositoryPostgres.checkCommentIsExist({ threadId: 'thread-11111111', commentId: 'comment-456' }))
+        await expect(commentThreadRepositoryPostgres.verifyCommentAvalaibility({ threadId: 'thread-11111111', commentId: 'comment-456' }))
           .rejects.toThrowError('comment yang Anda cari tidak ada');
       });
     });
@@ -191,13 +191,13 @@ describe('CommentThreadRepositoryPostgres', () => {
       });
     });
 
-    describe('checkCommentBelongsToThread', () => {
+    describe('checkCommentInThread', () => {
       it('should not throw error if comment exists in thread', async () => {
         await CommentsThreadTableTestHelper.addCommentThread({ id: 'comment-1111111', threadId: 'thread-11111111' });
         const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(
           pool, {},
         );
-        await expect(commentThreadRepositoryPostgres.checkCommentBelongsToThread({
+        await expect(commentThreadRepositoryPostgres.checkCommentInThread({
           threadId: 'thread-11111111', commentId: 'comment-1111111',
         })).resolves;
       });
@@ -208,7 +208,7 @@ describe('CommentThreadRepositoryPostgres', () => {
         const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(
           pool, {},
         );
-        await expect(commentThreadRepositoryPostgres.checkCommentBelongsToThread({
+        await expect(commentThreadRepositoryPostgres.checkCommentInThread({
           threadId: 'thread-11111111', commentId: 'comment-456',
         })).rejects.toThrowError('comment yang anda cari tidak ada di thread ini');
       });

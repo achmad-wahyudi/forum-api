@@ -51,7 +51,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
     }
   }
 
-  async checkCommentIsExist({ threadId, commentId }) {
+  async verifyCommentAvalaibility({ threadId, commentId }) {
     const query = {
       text: ` SELECT 1
       FROM comments INNER JOIN threads ON comments.thread_id = threads.id
@@ -88,7 +88,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
     }));
   }
 
-  async checkCommentBelongsToThread({ threadId, commentId }) {
+  async checkCommentInThread({ threadId, commentId }) {
     const query = {
       text: 'SELECT 1 FROM comments WHERE id = $1 AND thread_id= $2',
       values: [commentId, threadId],

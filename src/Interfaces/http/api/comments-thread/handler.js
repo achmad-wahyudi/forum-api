@@ -28,7 +28,6 @@ class CommentsThreadHandler {
       },
     });
     response.code(201);
-
     return response;
   }
 

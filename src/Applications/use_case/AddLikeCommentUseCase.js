@@ -9,7 +9,7 @@ class AddLikeCommentUseCase {
   }
 
   async execute(paramCommentLike, owner) {
-    await this._commentThreadRepository.checkCommentIsExist(paramCommentLike);
+    await this._commentThreadRepository.verifyCommentAvalaibility(paramCommentLike);
 
     const newLikeComment = new NewLikeComment({
       commentId: paramCommentLike.commentId, owner,

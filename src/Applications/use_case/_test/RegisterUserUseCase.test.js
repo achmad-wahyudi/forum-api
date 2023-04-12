@@ -5,22 +5,16 @@ const PasswordHash = require('../../security/PasswordHash');
 const RegisterUserUseCase = require('../RegisterUserUseCase');
 
 describe('RegisterUserUseCase', () => {
-  /**
-   * Menguji apakah use case mampu mengoskestrasikan langkah demi langkah dengan benar.
-   */
   it('should orchestrating the add user action correctly', async () => {
-    // Arrange
     const useCasePayload = {
       username: 'dicoding',
       password: 'secret',
       fullname: 'Dicoding Indonesia',
     };
 
-    /** creating dependency of use case */
     const mockUserRepository = new UserRepository();
     const mockPasswordHash = new PasswordHash();
 
-    /** mocking needed function */
     mockUserRepository.verifyAvailableUsername = jest.fn()
       .mockImplementation(() => useCasePayload.username);
     mockPasswordHash.hash = jest.fn()
@@ -32,16 +26,13 @@ describe('RegisterUserUseCase', () => {
         fullname: useCasePayload.fullname,
       }));
 
-    /** creating use case instance */
     const getUserUseCase = new RegisterUserUseCase({
       userRepository: mockUserRepository,
       passwordHash: mockPasswordHash,
     });
 
-    // Action
     const registeredUser = await getUserUseCase.execute(useCasePayload);
 
-    // Assert
     expect(registeredUser).toStrictEqual(new RegisteredUser({
       id: 'user-1111111111',
       username: useCasePayload.username,

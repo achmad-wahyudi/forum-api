@@ -1,32 +1,29 @@
 const AddedReplyComment = require('../AddedReplyComment');
 
 describe('a AddedReplyComment entity', () => {
-  it('should throw error if payload does not meet criteria', () => {
-    // arrange
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
       id: 'reply-111111111',
-      content: 'some reply',
+      content: 'content reply',
     };
 
-    // action & assert
-    expect(() => new AddedReplyComment(payload)).toThrowError('ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new AddedReplyComment(payload)).toThrowError('ADDED_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload has invalid data type', () => {
     const payload = {
       id: 111111111,
-      content: 145,
+      content: 111,
       owner: {},
     };
 
-    // action & assert
-    expect(() => new AddedReplyComment(payload)).toThrowError('ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new AddedReplyComment(payload)).toThrowError('ADDED_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create AddedReplyComment object properly', () => {
     const payload = {
       id: 'reply-111111111',
-      content: 'some reply',
+      content: 'content reply',
       owner: 'user-1111111111',
     };
 

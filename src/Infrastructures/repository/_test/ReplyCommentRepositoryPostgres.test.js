@@ -65,13 +65,13 @@ describe('ReplyCommentRepositoryPostgres', () => {
       });
     });
 
-    describe('checkReplyIsExist function', () => {
+    describe('verifyReplyAvalaibility function', () => {
       it('should not throw error if reply exists', async () => {
         const replyCommentRepositoryPostgres = new ReplyCommentRepositoryPostgres(pool, {});
 
         await RepliesCommentTableTestHelper.addReplyComment({});
 
-        expect(replyCommentRepositoryPostgres.checkReplyIsExist({
+        expect(replyCommentRepositoryPostgres.verifyReplyAvalaibility({
           threadId: 'thread-11111111',
           commentId: 'comment-1111111',
           replyId: 'reply-111111111',
@@ -81,7 +81,7 @@ describe('ReplyCommentRepositoryPostgres', () => {
       it('should throw error if reply does not exist', async () => {
         const replyCommentRepositoryPostgres = new ReplyCommentRepositoryPostgres(pool, {});
 
-        expect(replyCommentRepositoryPostgres.checkReplyIsExist({
+        expect(replyCommentRepositoryPostgres.verifyReplyAvalaibility({
           threadId: 'thread-11111111',
           commentId: 'comment-1111111',
           replyId: 'reply-789',

@@ -11,25 +11,17 @@ class AddedReplyComment {
     this.owner = owner;
   }
 
-  _verifyPayload(payload) {
-    if (this._isPayloadNotContainNeededProperty(payload)) {
-      throw new Error('ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
+  _verifyPayload({ id, content, owner }) {
+    if (!id || !content || !owner) {
+      throw new Error('ADDED_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
-    if (this._isPayloadNotMeetDataTypeSpecification(payload)) {
-      throw new Error('ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
-    }
-  }
-
-  _isPayloadNotContainNeededProperty({ id, content, owner }) {
-    return (!id || !content || !owner);
-  }
-
-  _isPayloadNotMeetDataTypeSpecification({ id, content, owner }) {
-    return (
+    if (
       typeof id !== 'string'
             || typeof content !== 'string'
             || typeof owner !== 'string'
-    );
+    ) {
+      throw new Error('ADDED_REPLY_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
   }
 }
 

@@ -26,7 +26,7 @@ class ReplyCommentRepositoryPostgres extends ReplyCommentRepository {
     return new AddedReplyComment({ ...result.rows[0] });
   }
 
-  async checkReplyIsExist({ threadId, commentId, replyId }) {
+  async verifyReplyAvalaibility({ threadId, commentId, replyId }) {
     const query = {
       text: `SELECT 1 
       FROM replies

@@ -21,7 +21,6 @@ class GetThreadUseCase {
     // eslint-disable-next-line no-restricted-syntax
     for (const comment of threadDetail.comments) {
       comment.replies = this._getRepliesForComments(comment, threadReplies);
-
       comment.likeCount = await this._getLikeCountForComments(comment);
     }
 

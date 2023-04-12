@@ -1,4 +1,4 @@
-class DetailComment {
+class DetailCommentThread {
   constructor(payload) {
     const {
       id, username, date, content, replies = [], likeCount, is_deleted: isDeleted,
@@ -23,7 +23,7 @@ class DetailComment {
     id, username, date, content, replies = [], likeCount,
   }) {
     if (!id || !username || !date || !content || !replies) {
-      throw new Error('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('DETAIL_COMMENT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
     if (typeof id !== 'string'
       || typeof username !== 'string'
@@ -31,9 +31,9 @@ class DetailComment {
       || typeof content !== 'string'
       || !(Array.isArray(replies))
       || typeof likeCount !== 'number') {
-      throw new Error('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DETAIL_COMMENT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
 
-module.exports = DetailComment;
+module.exports = DetailCommentThread;

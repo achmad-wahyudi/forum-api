@@ -1,12 +1,12 @@
 const DetailCommentThread = require('../DetailCommentThread');
 
 describe('a DetailCommentThread entity', () => {
-  it('should create DetailCommentThread object properly', () => {
+  it('should throw error when payload did not contain needed property', () => {
     const payload = {
       id: 'comment-1111111',
-      username: 'some comment',
-      date: 'thread-11111111,',
-      content: 'some comment',
+      username: 'username',
+      date: '2023',
+      content: 'content comment',
       replies: [],
       likeCount: 0,
       isDeleted: false,
@@ -22,36 +22,33 @@ describe('a DetailCommentThread entity', () => {
   });
 
   it('should throw error if payload does not meet criteria', () => {
-    // arrange
     const payload = {
       id: 'comment-1111111',
-      username: 'some comment',
-      date: 'thread-11111111,',
+      username: 'username',
+      date: '2023,',
     };
 
-    // action & assert
-    expect(() => new DetailCommentThread(payload)).toThrowError('DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new DetailCommentThread(payload)).toThrowError('DETAIL_COMMENT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload has invalid data type', () => {
     const payload = {
-      id: 123,
+      id: 12345,
       username: {},
-      date: 2021,
-      content: { content: 'some content' },
+      date: 2023,
+      content: { content: 'content comment' },
       replies: 'replies',
     };
 
-    // action & assert
-    expect(() => new DetailCommentThread(payload)).toThrowError('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new DetailCommentThread(payload)).toThrowError('DETAIL_COMMENT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create DetailCommentThread object properly', () => {
     const payload = {
       id: 'comment-1111111',
       username: 'user-1111111111',
-      date: 'thread-11111111,',
-      content: 'some content',
+      date: '2023',
+      content: 'content comment',
       is_deleted: true,
       replies: [],
       likeCount: 0,

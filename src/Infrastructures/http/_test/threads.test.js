@@ -24,17 +24,14 @@ describe('endpoints concerning CRUD on threads', () => {
 
   describe('when POST /threads', () => {
     it('should response 201 and persisted thread', async () => {
-      // arrange
-      /* add thread payload */
       const requestPayload = {
-        title: 'lorem ipsum',
-        body: 'dolor sit amet',
+        title: 'thread title',
+        body: 'thread body',
       };
 
       const server = await createServer(container);
       const serverHelper = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
-      // action
       const response = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -44,7 +41,6 @@ describe('endpoints concerning CRUD on threads', () => {
         },
       });
 
-      // assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(201);
       expect(responseJson.status).toEqual('success');
@@ -56,16 +52,13 @@ describe('endpoints concerning CRUD on threads', () => {
     });
 
     it('should respond with 403 when no access token is provided', async () => {
-      // arrange
-      /* add thread payload */
       const requestPayload = {
-        title: 'lorem ipsum',
-        body: 'dolor sit amet',
+        title: 'thread title',
+        body: 'thread body',
       };
 
       const server = await createServer(container);
 
-      // action
       const response = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -79,18 +72,13 @@ describe('endpoints concerning CRUD on threads', () => {
     });
 
     it('should response with 400 when payload does not meet structure specifications', async () => {
-      // arrange
-      /* add thread payload */
       const requestPayload = {
-        title: 'lorem ipsum',
+        title: 'thread title',
       };
 
       const server = await createServer(container);
-
-      /* add user and gain access token */
       const serverHelper = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
-      // action
       const response = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -103,23 +91,18 @@ describe('endpoints concerning CRUD on threads', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena properti yang dibutuhkan tidak ada');
+      expect(responseJson.message).toEqual('tidak dapat menambahkan thread baru karena properti yang dibutuhkan tidak ada');
     });
 
     it('should response with 400 when payload does not meet data type specifications', async () => {
-      // arrange
-      /* add thread payload */
       const requestPayload = {
         title: {},
-        body: 123,
+        body: 222,
       };
 
       const server = await createServer(container);
-
-      /* add user and gain access token */
       const { accessToken } = await ServerTestHelper.getAccessTokenAndUserId({ server });
 
-      // action
       const response = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -132,7 +115,7 @@ describe('endpoints concerning CRUD on threads', () => {
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
-      expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena tipe data tidak sesuai');
+      expect(responseJson.message).toEqual('tidak dapat menambahkan thread baru karena tipe data tidak sesuai');
     });
   });
 
@@ -141,6 +124,7 @@ describe('endpoints concerning CRUD on threads', () => {
       const server = await createServer(container);
 
       const threadId = 'thread-11111111';
+
       await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: 'JohnDoe' });
       await UsersTableTestHelper.registerUser({ id: 'user-456', username: 'JaneDoe' });
       await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-1111111111' });
@@ -150,7 +134,6 @@ describe('endpoints concerning CRUD on threads', () => {
       await RepliesCommentTableTestHelper.addReplyComment({ id: 'reply-456', commentId: 'comment-1111111', owner: 'user-456' });
       await LikesTableTestHelper.addLikeComment({ id: 'like-1111111111', commentId: 'comment-1111111', owner: 'user-1111111111' });
 
-      // action
       const response = await server.inject({
         method: 'GET',
         url: `/threads/${threadId}`,
@@ -172,10 +155,10 @@ describe('endpoints concerning CRUD on threads', () => {
       const server = await createServer(container);
 
       const threadId = 'thread-11111111';
+
       await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: 'John Doe' });
       await ThreadableTestHelper.addThread({ id: threadId, owner: 'user-1111111111' });
 
-      // action
       const response = await server.inject({
         method: 'GET',
         url: `/threads/${threadId}`,

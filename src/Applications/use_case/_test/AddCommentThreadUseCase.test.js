@@ -6,28 +6,25 @@ const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 
 describe('AddCommentThreadUseCase', () => {
   it('should orchestrate the add comment use case properly', async () => {
-    // arrange
     const useCasePayload = {
       content: 'comment content',
     };
 
-    const useCaseParam = {
+    const paramThread = {
       threadId: 'thread-11111111',
     };
 
-    const userIdFromAccessToken = 'user-1111111111';
+    const owner = 'user-1111111111';
 
     const expectedAddedCommentThread = new AddedCommentThread({
       id: 'comment-1111111',
       content: useCasePayload.content,
-      owner: userIdFromAccessToken,
+      owner,
     });
 
-    /** creating dependancies for use case */
     const mockThreadRepository = new ThreadRepository();
     const mockCommentThreadRepository = new CommentThreadRepository();
 
-    /** mocking needed functions */
     mockThreadRepository.verifyThreadAvalaibility = jest.fn()
       .mockImplementation(() => ({
         id: 'comment-1111111',
@@ -43,24 +40,21 @@ describe('AddCommentThreadUseCase', () => {
         owner: 'user-1111111111',
       }));
 
-    /** creating use case instance */
     const addCommentThreadUseCase = new AddCommentThreadUseCase({
       threadRepository: mockThreadRepository,
       commentThreadRepository: mockCommentThreadRepository,
     });
 
-    // action
     const addedCommentThread = await addCommentThreadUseCase.execute(
-      useCasePayload, useCaseParam, userIdFromAccessToken,
+      useCasePayload, paramThread, owner,
     );
 
-    // assert
     expect(addedCommentThread).toStrictEqual(expectedAddedCommentThread);
-    expect(mockThreadRepository.verifyThreadAvalaibility).toBeCalledWith(useCaseParam.threadId);
+    expect(mockThreadRepository.verifyThreadAvalaibility).toBeCalledWith(paramThread.threadId);
     expect(mockCommentThreadRepository.addCommentThread).toBeCalledWith(new NewCommentThread({
       content: useCasePayload.content,
-      threadId: useCaseParam.threadId,
-      owner: userIdFromAccessToken,
+      threadId: paramThread.threadId,
+      owner,
     }));
   });
 });

@@ -1,4 +1,4 @@
-class NewComment {
+class NewCommentThread {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -11,26 +11,18 @@ class NewComment {
     this.owner = owner;
   }
 
-  _verifyPayload(payload) {
-    if (this._isPayloadNotContainNeededProperty(payload)) {
-      throw new Error('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+  _verifyPayload({ content, threadId, owner }) {
+    if (!content || !threadId || !owner) {
+      throw new Error('NEW_COMMENT_THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
-    if (this._isPayloadNotMeetDataTypeSpecification(payload)) {
-      throw new Error('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
-    }
-  }
-
-  _isPayloadNotContainNeededProperty({ content, threadId, owner }) {
-    return (!content || !threadId || !owner);
-  }
-
-  _isPayloadNotMeetDataTypeSpecification({ content, threadId, owner }) {
-    return (
+    if (
       typeof content !== 'string'
-            || typeof threadId !== 'string'
-            || typeof owner !== 'string'
-    );
+      || typeof threadId !== 'string'
+      || typeof owner !== 'string'
+    ) {
+      throw new Error('NEW_COMMENT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
   }
 }
 
-module.exports = NewComment;
+module.exports = NewCommentThread;

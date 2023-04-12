@@ -16,6 +16,7 @@ class RepliesHandler {
     const addedReplyComment = await addReplyCommentUseCase.execute(
       request.payload, request.params, owner,
     );
+
     const response = h.response({
       status: 'success',
       data: {
@@ -31,6 +32,7 @@ class RepliesHandler {
     const deleteReplyCommentUseCase = this._container.getInstance(DeleteReplyCommentUseCase.name);
 
     await await deleteReplyCommentUseCase.execute(request.params, owner);
+
     const response = h.response({
       status: 'success',
     });

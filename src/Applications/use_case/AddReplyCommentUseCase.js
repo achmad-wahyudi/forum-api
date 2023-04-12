@@ -6,10 +6,10 @@ class AddReplyUseCase {
     this._replyCommentRepository = replyCommentRepository;
   }
 
-  async execute(useCasePayload, useCaseParam, owner) {
-    await this._commentThreadRepository.checkCommentBelongsToThread(useCaseParam);
+  async execute(useCasePayload, paramReplyComment, owner) {
+    await this._commentThreadRepository.checkCommentInThread(paramReplyComment);
     const newReplyComment = new NewReplyComment({
-      ...useCasePayload, ...useCaseParam, owner,
+      ...useCasePayload, ...paramReplyComment, owner,
     });
     return this._replyCommentRepository.addReplyComment(newReplyComment);
   }
