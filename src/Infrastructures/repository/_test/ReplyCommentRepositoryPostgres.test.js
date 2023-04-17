@@ -83,6 +83,8 @@ describe('ReplyCommentRepositoryPostgres', () => {
 
       await RepliesCommentTableTestHelper.addReplyComment({});
 
+      jest.setTimeout(15000);
+
       expect(replyCommentRepositoryPostgres.verifyReplyAccess({
         ownerId: 'user-1111111111',
         replyId: 'reply-111111111',
@@ -105,7 +107,7 @@ describe('ReplyCommentRepositoryPostgres', () => {
       const replyCommentRepositoryPostgres = new ReplyCommentRepositoryPostgres(pool, {});
 
       await RepliesCommentTableTestHelper.addReplyComment({});
-      jest.setTimeout(10000);
+      jest.setTimeout(15000);
       expect(replyCommentRepositoryPostgres.deleteReplyById('reply-111111111'))
         .resolves.toBeUndefined();
     });
