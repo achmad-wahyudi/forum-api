@@ -119,5 +119,7 @@ describe('GetThreadDetailUseCase', () => {
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCaseParam.threadId);
     expect(mockCommentThreadRepository.getCommentsByThreadId).toBeCalledWith(useCaseParam.threadId);
     expect(mockReplyCommentRepository.getRepliesByThreadId).toBeCalledWith(useCaseParam.threadId);
+    expect(mockLikeCommentRepository.getLikeCountByCommentId)
+      .toBeCalledWith('comment-1111111');
   });
 });

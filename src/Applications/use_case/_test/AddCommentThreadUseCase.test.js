@@ -1,5 +1,4 @@
 const NewCommentThread = require('../../../Domains/comments-thread/entities/NewCommentThread');
-const AddedCommentThread = require('../../../Domains/comments-thread/entities/AddedCommentThread');
 const CommentThreadRepository = require('../../../Domains/comments-thread/CommentThreadRepository');
 const AddCommentThreadUseCase = require('../AddCommentThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
@@ -16,7 +15,7 @@ describe('AddCommentThreadUseCase', () => {
 
     const owner = 'user-1111111111';
 
-    const expectedAddedCommentThread = new AddedCommentThread({
+    const expectedAddedCommentThread = ({
       id: 'comment-1111111',
       content: useCasePayload.content,
       owner,
@@ -26,15 +25,9 @@ describe('AddCommentThreadUseCase', () => {
     const mockCommentThreadRepository = new CommentThreadRepository();
 
     mockThreadRepository.verifyThreadAvalaibility = jest.fn()
-      .mockImplementation(() => ({
-        id: 'comment-1111111',
-        title: 'title-123',
-        body: 'body-123',
-        date: '2020',
-        username: 'John Doe',
-      }));
+      .mockImplementation(() => Promise.resolve());
     mockCommentThreadRepository.addCommentThread = jest.fn()
-      .mockImplementation(() => new AddedCommentThread({
+      .mockImplementation(() => ({
         id: 'comment-1111111',
         content: 'comment content',
         owner: 'user-1111111111',
