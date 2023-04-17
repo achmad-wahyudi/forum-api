@@ -95,4 +95,36 @@ describe('ThreadRepositoryPostgres', () => {
       expect(typeof acquiredThread.date).toStrictEqual('string');
     });
   });
+
+  describe('getThreadById function', () => {
+    const date = (new Date()).toISOString();
+    it('should return NotFoundError when thread is not found', async () => {
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+      await UsersTableTestHelper.registerUser({ id: 'user-1111111111' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-11111111', owner: 'user-1111111111' });
+
+      await expect(threadRepositoryPostgres.verifyThreadAvalaibility('thread-x'))
+        .rejects
+        .toThrowError(NotFoundError);
+    });
+
+    it('should return thread when thread is found', async () => {
+      const newThread = {
+        id: 'thread-11111111', title: 'thread title', body: 'thread body', owner: 'user-1111111111', date: '2023',
+      };
+      const expectedThread = {
+        id: 'thread-11111111',
+        title: 'thread title',
+        date,
+        username: 'John Doe',
+        body: 'thread body',
+      };
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {});
+      await UsersTableTestHelper.registerUser({ id: 'user-1111111111', username: expectedThread.username });
+      await ThreadsTableTestHelper.addThread(newThread);
+
+      expect(threadRepositoryPostgres.verifyThreadAvalaibility('thread-11111111'))
+        .resolves.toBeUndefined();
+    });
+  });
 });
